@@ -1,0 +1,9 @@
+startSystem
+    if time > 0 && time < 30
+        led1 ON
+        led2 OFF
+    if time > 31 && time 60
+        led1 OFF
+        led2 ON
+
+    #system loops
