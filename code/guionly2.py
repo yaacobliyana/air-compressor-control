@@ -474,12 +474,13 @@ exit_btn = Button(root, text="Quit", width=4, height=1,
                   bg="black", fg="white",
                   command=lambda root=root:quit(root))
 
+#Inserting timer label
 tlabel = Label(root, text=' ',
               font=('Quicksand', 14),
               bg='black', fg='white')
 tlabel.place(x=330,y=210)
-#Inserting timer1 label
 
+#Inserting timer1 label
 tlabel1 = Label(root, text=' ',
               font=('Quicksand', 14),
           bg='black', fg='white' )
