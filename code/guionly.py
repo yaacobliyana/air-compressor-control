@@ -8,7 +8,6 @@ import random
 import calendar
 import threading
 import datetime as dt
-import RPi.GPIO as GPIO
 
 switch = True
 
@@ -17,13 +16,6 @@ root.geometry("800x420")
 root.title("LED TEST")
 root.configure(bg='black')
 
-led1 = 23
-led2 = 24
-
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(led1,GPIO.OUT)
-GPIO.setup(led2,GPIO.OUT)
 
 class Clock(Label):
     """ Class that contains the clock widget and clock refresh """
@@ -74,50 +66,42 @@ class Clock(Label):
 def startSystem():
     def run():
         while (switch == True):                
-            GPIO.output(led1, True)
-            GPIO.output(led2, False)
-            time.sleep(3)
-            GPIO.output(led1, False)
-            GPIO.output(led2, True)
-            time.sleep(3)
+            print('led1 is blinking..')
+            time.sleep(10)
+            print('led2 is blinking..')
+            time.sleep(10)
             if switch == False:
                 break
             
     thread = threading.Thread(target=run)
     thread.start()
-'''    
-def countdown():
-    def runn():
-        rem = 0
-        for (i)
-'''
+
 def switchon():
     global switch
     switch = True
     print('System is running')
     startSystem()
     step()
-    run_anic1()
+    anic1()
     
 def switchoff():
     print('System exited')
     global switch
     switch = False
-    GPIO.output(led1, False)
-    GPIO.output(led2, False)
     bstop()
+    circlez()
     
 def on_led1():
-    GPIO.output(led1, True)
+    print('led1 is on')
 
 def off_led1():
-    GPIO.output(led1, False)
+    print('led1 is off')
 
 def on_led2():
-    GPIO.output(led2, True)
+    print('led2 is on')
 
 def off_led2():
-    GPIO.output(led2, False)
+    print('led2 is off')
         
 #Toggle Switch for Compressor 1
 def toggle1():
@@ -154,15 +138,17 @@ def toggle2():
         
 def step():
     def runn():
-        full = 10
+        full = 100
         i = 0
+        plabel.config(text='0%')
         while(i<full):
             time.sleep(1)
-            pbar['value']+=10
+            pbar['value']+=1
             i+=1
             percent.set(str(int((i/full)*100))+"%")
             root.update_idletasks()
             if i==full:
+                break
                 switchoff()
             
     ts = threading.Thread(target=runn)
@@ -207,21 +193,21 @@ def circlez():
     
 def circlez_1a():
     c1 = dance.create_oval(130,75,140,85,fill='white')
-    c2 = dance.create_oval(145,75,155,85,fill='cyan')
+    c2 = dance.create_oval(145,75,155,85,fill='blue')
     c3 = dance.create_oval(160,75,170,85,fill='white')
-    c4 = dance.create_oval(175,75,185,85,fill='cyan')
+    c4 = dance.create_oval(175,75,185,85,fill='blue')
     c5 = dance.create_oval(190,75,200,85,fill='white')
-    c6 = dance.create_oval(205,75,215,85,fill='cyan')
+    c6 = dance.create_oval(205,75,215,85,fill='blue')
     c7 = dance.create_oval(220,75,230,85,fill='white')
-    c8 = dance.create_oval(220,60,230,70,fill='cyan')
+    c8 = dance.create_oval(220,60,230,70,fill='blue')
     c9 = dance.create_oval(220,45,230,55,fill='white')
-    c10 = dance.create_oval(235,45,245,55,fill='cyan')
+    c10 = dance.create_oval(235,45,245,55,fill='blue')
     c11 = dance.create_oval(250,45,260,55,fill='white')
-    c12 = dance.create_oval(265,45,275,55,fill='cyan')
+    c12 = dance.create_oval(265,45,275,55,fill='blue')
     c13 = dance.create_oval(280,45,290,55,fill='white')
-    c14 = dance.create_oval(295,45,305,55,fill='cyan')
+    c14 = dance.create_oval(295,45,305,55,fill='blue')
     c15 = dance.create_oval(310,45,320,55,fill='white')
-    c16 = dance.create_oval(325,45,335,55,fill='cyan')
+    c16 = dance.create_oval(325,45,335,55,fill='blue')
     
     c17 = dance.create_oval(130,210,140,220,fill='white')
     c18 = dance.create_oval(145,210,155,220,fill='white')
@@ -240,21 +226,21 @@ def circlez_1a():
     c31 = dance.create_oval(220,90,230,100,fill='white')
 
 def circlez_1b():
-    c1 = dance.create_oval(130,75,140,85,fill='cyan')
+    c1 = dance.create_oval(130,75,140,85,fill='blue')
     c2 = dance.create_oval(145,75,155,85,fill='white')
-    c3 = dance.create_oval(160,75,170,85,fill='cyan')
+    c3 = dance.create_oval(160,75,170,85,fill='blue')
     c4 = dance.create_oval(175,75,185,85,fill='white')
-    c5 = dance.create_oval(190,75,200,85,fill='cyan')
+    c5 = dance.create_oval(190,75,200,85,fill='blue')
     c6 = dance.create_oval(205,75,215,85,fill='white')
-    c7 = dance.create_oval(220,75,230,85,fill='cyan')
+    c7 = dance.create_oval(220,75,230,85,fill='blue')
     c8 = dance.create_oval(220,60,230,70,fill='white')
-    c9 = dance.create_oval(220,45,230,55,fill='cyan')
+    c9 = dance.create_oval(220,45,230,55,fill='blue')
     c10 = dance.create_oval(235,45,245,55,fill='white')
-    c11 = dance.create_oval(250,45,260,55,fill='cyan')
+    c11 = dance.create_oval(250,45,260,55,fill='blue')
     c12 = dance.create_oval(265,45,275,55,fill='white')
-    c13 = dance.create_oval(280,45,290,55,fill='cyan')
+    c13 = dance.create_oval(280,45,290,55,fill='blue')
     c14 = dance.create_oval(295,45,305,55,fill='white')
-    c15 = dance.create_oval(310,45,320,55,fill='cyan')
+    c15 = dance.create_oval(310,45,320,55,fill='blue')
     c16 = dance.create_oval(325,45,335,55,fill='white')
     
     c17 = dance.create_oval(130,210,140,220,fill='white')
@@ -272,20 +258,118 @@ def circlez_1b():
     c29 = dance.create_oval(220,120,230,130,fill='white')
     c30 = dance.create_oval(220,105,230,115,fill='white')
     c31 = dance.create_oval(220,90,230,100,fill='white')
+
+def circlez_2a():
+    c1 = dance.create_oval(130,75,140,85,fill='white')
+    c2 = dance.create_oval(145,75,155,85,fill='white')
+    c3 = dance.create_oval(160,75,170,85,fill='white')
+    c4 = dance.create_oval(175,75,185,85,fill='white')
+    c5 = dance.create_oval(190,75,200,85,fill='white')
+    c6 = dance.create_oval(205,75,215,85,fill='white')
+
+    c17 = dance.create_oval(130,210,140,220,fill='white')
+    c18 = dance.create_oval(145,210,155,220,fill='magenta')
+    c19 = dance.create_oval(160,210,170,220,fill='white')
+    c20 = dance.create_oval(175,210,185,220,fill='magenta')
+    c21 = dance.create_oval(190,210,200,220,fill='white')
+    c22 = dance.create_oval(205,210,215,220,fill='magenta')
+    c23 = dance.create_oval(220,210,230,220,fill='white')
+    c24 = dance.create_oval(220,195,230,205,fill='magenta')
+    c25 = dance.create_oval(220,180,230,190,fill='white')
+    c26 = dance.create_oval(220,165,230,175,fill='magenta')
+    c27 = dance.create_oval(220,150,230,160,fill='white')
+    c28 = dance.create_oval(220,135,230,145,fill='magenta')
+    c29 = dance.create_oval(220,120,230,130,fill='white')
+    c30 = dance.create_oval(220,105,230,115,fill='magenta')
+    c31 = dance.create_oval(220,90,230,100,fill='white')
+    c7 = dance.create_oval(220,75,230,85,fill='magenta')
+    c8 = dance.create_oval(220,60,230,70,fill='white')
+    c9 = dance.create_oval(220,45,230,55,fill='magenta')
+    c10 = dance.create_oval(235,45,245,55,fill='white')
+    c11 = dance.create_oval(250,45,260,55,fill='magenta')
+    c12 = dance.create_oval(265,45,275,55,fill='white')
+    c13 = dance.create_oval(280,45,290,55,fill='magenta')
+    c14 = dance.create_oval(295,45,305,55,fill='white')
+    c15 = dance.create_oval(310,45,320,55,fill='magenta')
+    c16 = dance.create_oval(325,45,335,55,fill='white')
     
+def circlez_2b():
+    c1 = dance.create_oval(130,75,140,85,fill='white')
+    c2 = dance.create_oval(145,75,155,85,fill='white')
+    c3 = dance.create_oval(160,75,170,85,fill='white')
+    c4 = dance.create_oval(175,75,185,85,fill='white')
+    c5 = dance.create_oval(190,75,200,85,fill='white')
+    c6 = dance.create_oval(205,75,215,85,fill='white')
+
+    c17 = dance.create_oval(130,210,140,220,fill='magenta')
+    c18 = dance.create_oval(145,210,155,220,fill='white')
+    c19 = dance.create_oval(160,210,170,220,fill='magenta')
+    c20 = dance.create_oval(175,210,185,220,fill='white')
+    c21 = dance.create_oval(190,210,200,220,fill='magenta')
+    c22 = dance.create_oval(205,210,215,220,fill='white')
+    c23 = dance.create_oval(220,210,230,220,fill='magenta')
+    c24 = dance.create_oval(220,195,230,205,fill='white')
+    c25 = dance.create_oval(220,180,230,190,fill='magenta')
+    c26 = dance.create_oval(220,165,230,175,fill='white')
+    c27 = dance.create_oval(220,150,230,160,fill='magenta')
+    c28 = dance.create_oval(220,135,230,145,fill='white')
+    c29 = dance.create_oval(220,120,230,130,fill='magenta')
+    c30 = dance.create_oval(220,105,230,115,fill='white')
+    c31 = dance.create_oval(220,90,230,100,fill='magenta')
+    c7 = dance.create_oval(220,75,230,85,fill='white')
+    c8 = dance.create_oval(220,60,230,70,fill='magenta')
+    c9 = dance.create_oval(220,45,230,55,fill='white')
+    c10 = dance.create_oval(235,45,245,55,fill='magenta')
+    c11 = dance.create_oval(250,45,260,55,fill='white')
+    c12 = dance.create_oval(265,45,275,55,fill='magenta')
+    c13 = dance.create_oval(280,45,290,55,fill='white')
+    c14 = dance.create_oval(295,45,305,55,fill='magenta')
+    c15 = dance.create_oval(310,45,320,55,fill='white')
+    c16 = dance.create_oval(325,45,335,55,fill='magenta')
+
+def blink_path1():
+    start = time.time()
+    i=0
+    while i < 10:
+        i = time.time() - start
+        tlabel.config(text=str(int(i))+" secs")
+        circlez_1a()
+        time.sleep(0.1)
+        circlez_1b()
+        time.sleep(0.1)
+        if i == 10:
+            break
+        
+
+def blink_path2():
+    start = time.time()
+    i=0
+    while i < 10:
+        i = time.time() - start
+        tlabel1.config(text=str(int(i))+" secs")
+        circlez_2a()
+        time.sleep(0.1)
+        circlez_2b()
+        time.sleep(0.1)
+        circlez_2a()
+        if i == 10:
+            break
+
+
 def anic1():
     def run_anic1():
-        while (switch == True):
-            circlez_1a()
-            time.sleep(1)
-            circlez_1b
-            time.sleep(1)
-            if switch == False:
+        full = 5
+        i = 0
+        while(i<full):
+            blink_path1()
+            blink_path2()
+            if i == full:
                 break
+                switchoff()
+
     tra = threading.Thread(target=run_anic1)
     tra.start()
             
-    
 
 #########################################################
 #                                                       #
@@ -374,6 +458,16 @@ pbar = ttk.Progressbar(root, orient=VERTICAL,
 plabel = Label(root, textvariable=percent, font=('Quicksand',10),
                 bg='black', fg='white')
 
+#Inserting timer1 label
+tlabel = Label(root, text=' ',
+              font=('Quicksand', 14),
+              bg='black', fg='white')
+#Inserting timer1 label
+tlabel1 = Label(root, text=' ',
+              font=('Quicksand', 14),
+              bg='black', fg='white')
+
+
 
 #Inserting exit button
 exit_btn = Button(root, text="Quit", width=4, height=1,
@@ -386,7 +480,7 @@ exit_btn = Button(root, text="Quit", width=4, height=1,
 title.place(x=190,y=25)
 elquator.place(x=40,y=35)
 date.place(x=260,y=70)
-clock1.place(x=410,y=67)
+clock1.place(x=415,y=70)
 
 start_btn.place(x=40,y=200)
 stop_btn.place(x=40,y=300)
@@ -400,7 +494,9 @@ plabel.place(x=585,y=130)
 pbar.place(x=590,y=155)
 tank.place(x=520,y=155)
 airComp.place(x=220,y=140)
+tlabel.place(x=330,y=210)
 airComp1.place(x=220,y=275)
+tlabel1.place(x=330,y=340)
 
 exit_btn.place(x=730,y=380)
 
