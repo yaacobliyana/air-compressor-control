@@ -443,9 +443,9 @@ tank = Label(root, image=newgt, bg='black')
 
 #Inserting Start Button Image
 sb = Image.open('start.png')
-res_sb = sb.resize((80, 80), Image.ANTIALIAS)
+res_sb = sb.resize((70, 70), Image.ANTIALIAS)
 newsb = ImageTk.PhotoImage(res_sb)
-startbi = Label(root, image=newsb)
+startbi = Label(root, image=newsb, bg='black')
 
 #Inserting title
 title = Label(root, text='AIR COMPRESSOR CONTROL SYSTEM',
