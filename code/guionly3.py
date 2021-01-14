@@ -411,16 +411,17 @@ def anic1():
 #                                                       #
 #########################################################
 #
-#Inserting Elquator Logo
-logo = Image.open('elquator.png')
-resizedlogo = logo.resize((120, 120), Image.ANTIALIAS)
-newlogo = ImageTk.PhotoImage(resizedlogo)
-elquator = Label(root, image=newlogo)
 
 #Inserting frame for animation
 dance = Canvas(root, bg='black',width=425,height=265)
 #Draw many many circles (put in a function)
 circlez()
+
+#Inserting Elquator Logo
+logo = Image.open('elquator.png')
+resizedlogo = logo.resize((120, 120), Image.ANTIALIAS)
+newlogo = ImageTk.PhotoImage(resizedlogo)
+elquator = Label(root, image=newlogo)
 
 #Inserting Compressor Icon
 ac = Image.open('airComp.png')
@@ -440,6 +441,12 @@ res_gt = gt.resize((54, 220), Image.ANTIALIAS)
 newgt = ImageTk.PhotoImage(res_gt)
 tank = Label(root, image=newgt, bg='black')
 
+#Inserting Start Button Image
+sb = Image.open('start.png')
+res_sb = sb.resize((80, 80), Image.ANTIALIAS)
+newsb = ImageTk.PhotoImage(res_sb)
+startbi = Label(root, image=newsb)
+
 #Inserting title
 title = Label(root, text='AIR COMPRESSOR CONTROL SYSTEM',
               font=('Quicksand', 24),
@@ -457,10 +464,7 @@ frame3 = LabelFrame(root, text='AUTO CONTROL', padx=13, pady=13,
                    font=('URW Gothic L',14), bg='black', fg='white')
 
 #START Button
-start_btn = Button(frame3, text="START", width=8, height=2,
-               bg="#4EA20E", fg="black",
-               font=('URW Gothic L', 16, 'bold'),
-               activebackground='#428C09', command=switchon)
+start_btn = Button(frame3, image=startbi, command=switchon)
 
 stop_btn = Button(frame3, text='STOP',width=8, height=2,
                   bg="#D9290B", fg="black",
