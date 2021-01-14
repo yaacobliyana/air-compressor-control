@@ -70,7 +70,7 @@ class Clock(Label):
             self.display_time = self.display_time.replace(' ',':',1)
         self.config(text=self.display_time)
         self.after(1000, self.blink_colon)
-        
+'''        
 def startSystem():
     def run():
         while (switch == True):                
@@ -85,13 +85,13 @@ def startSystem():
             
     thread = threading.Thread(target=run)
     thread.start()
-
+'''
 
 def switchon():
     global switch
     switch = True
     print('System is running')
-    startSystem()
+    #startSystem()
     step()
     anic1()
     
@@ -101,7 +101,7 @@ def switchoff():
     switch = False
     GPIO.output(led1, False)
     GPIO.output(led2, False)
-    bstop()
+    #bstop()
     circlez()
 
 def on_led1():
@@ -342,10 +342,12 @@ def circlez_2b():
 def blink_path1():
     start = time.time()
     
-    i = 0
-    while i < 10:
-        i = time.time() - start
+    i = 10
+    while i > 0:
+        i = 11 - (time.time() - start)
         tlabel.config(text=str(int(i))+" secs")
+        GPIO.output(led1, True)
+        GPIO.output(led2, False)
         circlez_1a()
         time.sleep(0.1)
         circlez_1b()
@@ -356,10 +358,12 @@ def blink_path1():
 
 def blink_path2():
     start = time.time()
-    i = 0
-    while i < 10:
-        i = time.time() - start
+    i = 10
+    while i > 0:
+        i = 11 - (time.time() - start)
         tlabel1.config(text=str(int(i))+" secs")
+        GPIO.output(led2, True)
+        GPIO.output(led1, False)
         circlez_2a()
         time.sleep(0.1)
         circlez_2b()
