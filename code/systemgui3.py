@@ -17,7 +17,7 @@ root.geometry("800x420")
 root.title("LED TEST")
 
 #Placing a background image
-bg = Image.open('space.png')
+bg = Image.open('spacepi.png')
 bgg = ImageTk.PhotoImage(bg)
 labelbg = Label(root, image=bgg)
 labelbg.place(x=0, y=0, relwidth=1, relheight=1)
