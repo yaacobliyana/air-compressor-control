@@ -504,10 +504,21 @@ tlabel1 = Label(root, text=' ',
           bg='black', fg='white' )
 tlabel1.place(x=330,y=340) 
 
+
+#Inserting compressor 1 label
+clabel1 = Label(root, text='C1', font=('URW Gothic L', 14, 'bold'),
+          bg='black', fg='white' )
+clabel1.place(x=267,y=187) 
+
+
+#Inserting compressor 2 label
+clabel2 = Label(root, text='C2', font=('URW Gothic L', 14, 'bold'),
+          bg='black', fg='white' )
+clabel2.place(x=267,y=322) 
+
 ##DISPLAYING VARIABLE ON SCREEN
 #
-
-
+#
 elquator.place(x=30,y=30)
 date.place(x=260,y=70)
 clock1.place(x=410,y=67)

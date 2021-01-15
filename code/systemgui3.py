@@ -502,6 +502,14 @@ tlabel = Label(root, text=' ', font=('Quicksand', 14),
 tlabel1 = Label(root, text=' ', font=('Quicksand', 14),
                 bg='black', fg='white' )
 
+#Inserting compressor 1 label
+clabel1 = Label(root, text='C1', font=('URW Gothic L', 14, 'bold'),
+          bg='black', fg='white' )
+
+#Inserting compressor 2 label
+clabel2 = Label(root, text='C2', font=('URW Gothic L', 14, 'bold'),
+          bg='black', fg='white' )
+
 
 #Inserting exit button
 exit_btn = Button(root, text="Quit", width=4, height=1,
@@ -525,8 +533,10 @@ plabel.place(x=585,y=130)
 pbar.place(x=595,y=155)
 tank.place(x=525,y=155)
 airComp.place(x=220,y=140)
+clabel1.place(x=267,y=187) 
 tlabel.place(x=330,y=210)
 airComp1.place(x=220,y=275)
+clabel2.place(x=267,y=322) 
 tlabel1.place(x=330,y=340) 
 
 exit_btn.place(x=730,y=380)
