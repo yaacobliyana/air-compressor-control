@@ -8,6 +8,21 @@ import random
 import calendar
 import threading
 import datetime as dt
+import RPi.GPIO as GPIO
+
+#Importing MCP libraries
+import busio
+import digitalio
+import board
+import adafruit_mcp3xxx.mcp3008 as MCP
+from adafruit_mcp3xxx.analog_in import AnalogIn
+#defining MCP
+spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
+cs = digitalio.DigitalInOut(board.D22)
+mcp = MCP.MCP3008(spi, cs)
+chan0 = AnalogIn(mcp, MCP.P0)
+chan1 = AnalogIn(mcp, MCP.P1)
+
 
 switch = True
 
@@ -15,12 +30,22 @@ root = Tk()
 root.geometry("800x420")
 root.title("LED TEST")
 
+#Placing a background image
 bg = Image.open('spacepi.png')
 bgg = ImageTk.PhotoImage(bg)
-
 labelbg = Label(root, image=bgg)
 labelbg.place(x=0, y=0, relwidth=1, relheight=1)
 
+#Defining LEDs setup
+led1 = 23
+led2 = 24
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(led1,GPIO.OUT)
+GPIO.setup(led2,GPIO.OUT)
+
+#Class for displaying time and date
+#
 class Clock(Label):
     """ Class that contains the clock widget and clock refresh """
 
@@ -66,8 +91,10 @@ class Clock(Label):
             self.display_time = self.display_time.replace(' ',':',1)
         self.config(text=self.display_time)
         self.after(1000, self.blink_colon)
-        
 
+
+#Spawning Message box for Warning
+#
 def choice(option):
     pop.destroy()
 
@@ -108,82 +135,78 @@ def messagebox():
     no = Button(my_frame, text="NO", command=lambda: choice("no"), bg="yellow")
     no.grid(row=0, column=2, padx=5)
 
+def mcp_update():
+    global v1
+    global v2
+    v1 = chan0.voltage
+    v2 = chan1.voltage
+    print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
+    print('ADC Voltage 2: ' + str(chan1.voltage) + 'V')
 
+#Start System function
 def switchon():
     global switch
-    switch = True
-    print('System is running')
-    # startSystem()
-    step()
-    anic1()
-    
+    mcp_update()
+    if (v1 > 3.0 and v2 > 3.0):
+        time.sleep(5)
+        switch = True
+        print('System is running')
+        step()
+        anic1()
+    else:
+        switch == False
+        switchoff()
+
+#Turning off system function
 def switchoff():
     print('System exited')
     global switch
     switch = False
+    GPIO.output(led1, False)
+    GPIO.output(led2, False)
     #bstop()
     circlez()
     
-def on_led1():
-    def run():
-        print('led1 is on')
-        start = time.time()
-        i = 0
-        while (i < 10):
-            i = time.time() - start
+def blink_path1():
+    start = time.time()
+    i = 1800
+    while i > 0:
+        if (v1 > 3.0 and v2 > 3.0):
+            i = 1801 - (time.time() - start)
+            tlabel.config(text=str(int(i))+" secs")
+            GPIO.output(led1, True)
+            GPIO.output(led2, False)
+            mcp_update()
             circlez_1a()
             time.sleep(0.1)
             circlez_1b()
             time.sleep(0.1)
-            if switch == False:
-                if not switchoff():
-                    break
-    t = threading.Thread(target=run)
-    t.start()
-
-def off_led1():
-    global switch
-    switch == False
-    print('led1 is off')
-    circlez()
-
-def on_led2():
-    print('led2 is on')
-
-def off_led2():
-    print('led2 is off')
-
-def blink_path1():
-    start = time.time()
-    i = 10
-    while (i > 0):
-        i = 11 - (time.time() - start)
-        tlabel.config(text=str(int(i))+" secs")
-        print('led1 is blinking..')
-        circlez_1a()
-        time.sleep(0.1)
-        circlez_1b()
-        time.sleep(0.1)
-        if (switch==False):
-            break
-       
+        else:
+            switch == False
+            switchoff()
+        if switch == False:
+                break 
  
 
 def blink_path2():
     start = time.time()
-    
-    i = 10
-    while (i > 0):
-        i = 11 - (time.time() - start)
-        tlabel1.config(text=str(int(i))+" secs")
-        print('led2 is blinking..')
-        circlez_2a()
-        time.sleep(0.1)
-        circlez_2b()
-        time.sleep(0.1)
-        if switch==False:
-            break
-
+    i = 1800
+    while i > 0:
+        if (v1 > 3.0 and v2 > 3.0):
+            i = 1801 - (time.time() - start)
+            tlabel1.config(text=str(int(i))+" secs")
+            GPIO.output(led2, True)
+            GPIO.output(led1, False)
+            mcp_update()
+            circlez_2a()
+            time.sleep(0.1)
+            circlez_2b()
+            time.sleep(0.1)
+        else:
+            switch == False
+            switchoff()
+        if switch == False:
+                break
 
 def anic1():
     def run_anic1():
@@ -196,10 +219,20 @@ def anic1():
             if (i==full or switch == False):
                 if not switchoff():
                     break
-            
     tra = threading.Thread(target=run_anic1)
     tra.start()
 
+def on_led1():
+    GPIO.output(led1, True)
+
+def off_led1():
+    GPIO.output(led1, False)
+
+def on_led2():
+    GPIO.output(led2, True)
+
+def off_led2():
+    GPIO.output(led2, False)
         
 #Toggle Switch for Compressor 1
 def toggle1():
@@ -234,7 +267,6 @@ def step():
             root.update_idletasks()
             if (i == full or switch == False):
                 break
-            
     ts = threading.Thread(target=runn)
     ts.start()
     
@@ -342,7 +374,7 @@ def circlez_1b():
     c29 = dance.create_oval(220,120,230,130,fill='white')
     c30 = dance.create_oval(220,105,230,115,fill='white')
     c31 = dance.create_oval(220,90,230,100,fill='white')
-
+    
 def circlez_2a():
     c1 = dance.create_oval(130,75,140,85,fill='white')
     c2 = dance.create_oval(145,75,155,85,fill='white')
@@ -410,8 +442,8 @@ def circlez_2b():
     c14 = dance.create_oval(295,45,305,55,fill='magenta')
     c15 = dance.create_oval(310,45,320,55,fill='white')
     c16 = dance.create_oval(325,45,335,55,fill='magenta')
-
             
+    
 
 #########################################################
 #                                                       #
@@ -419,7 +451,6 @@ def circlez_2b():
 #                                                       #
 #########################################################
 #
-
 #Inserting frame for animation
 dance = Canvas(root, bg='black',width=425,height=265)
 #Draw many many circles (put in a function)
@@ -469,21 +500,20 @@ off = Image.open('off.png')
 res_off = off.resize((80, 80), Image.ANTIALIAS)
 offb = ImageTk.PhotoImage(res_off)
 
+
 #Inserting clock
 clock1 = Clock(root)
-clock1.configure(bg='black',fg='white',font=("Quicksand",16, 'bold'))
+clock1.configure(bg='black',fg='white',font=("helvetica",16, 'bold'))
 #Adding date
 date = Label(root, text=f"{dt.datetime.now():%a, %b %d %Y}",
              fg="white", bg="black", font=("helvetica",14))
 
-
 #START Button
 start_btn = Button(root, image=newsb, command=messagebox, 
                     borderwidth=0, bg='black')
-
+#STOP Button
 stop_btn = Button(root, image=newstopb, command=switchoff,
                     borderwidth=0, bg='black')
-
 
 #ON_LED1 Toggle Button
 led1_btn = Button(root, text='ON', image=onb, command=toggle1,
@@ -501,40 +531,32 @@ pbar = ttk.Progressbar(root, orient=VERTICAL,
 plabel = Label(root, textvariable=percent, font=('Quicksand',10),
                 bg='black', fg='white')
 
+#Inserting timer1 label
+tlabel = Label(root, text=' ', font=('Quicksand', 14),
+                bg='black', fg='white')
+
+#Inserting timer2 label
+tlabel1 = Label(root, text=' ', font=('Quicksand', 14),
+                bg='black', fg='white' )
+
+#Inserting compressor 1 label
+clabel1 = Label(root, text='C1', font=('URW Gothic L', 14, 'bold'),
+          bg='black', fg='white' )
+
+#Inserting compressor 2 label
+clabel2 = Label(root, text='C2', font=('URW Gothic L', 14, 'bold'),
+          bg='black', fg='white' )
+
 
 #Inserting exit button
 exit_btn = Button(root, text="Quit", width=4, height=1,
                   bg="black", fg="white",
                   command=lambda root=root:quit(root))
 
-#Inserting timer label
-tlabel = Label(root, text=' ',
-              font=('Quicksand', 14),
-              bg='black', fg='white')
-tlabel.place(x=330,y=210)
-
-#Inserting timer1 label
-tlabel1 = Label(root, text=' ',
-              font=('Quicksand', 14),
-          bg='black', fg='white' )
-tlabel1.place(x=330,y=340) 
-
-
-#Inserting compressor 1 label
-clabel1 = Label(root, text='C1', font=('URW Gothic L', 14, 'bold'),
-          bg='black', fg='white' )
-clabel1.place(x=267,y=187) 
-
-
-#Inserting compressor 2 label
-clabel2 = Label(root, text='C2', font=('URW Gothic L', 14, 'bold'),
-          bg='black', fg='white' )
-clabel2.place(x=267,y=322) 
 
 ##DISPLAYING VARIABLE ON SCREEN
 #
-#
-elquator.place(x=30,y=30)
+elquator.place(x=30,y=35)
 date.place(x=260,y=70)
 clock1.place(x=410,y=67)
 
@@ -545,10 +567,14 @@ led2_btn.place(x=680,y=280)
 
 dance.place(x=205,y=120)
 plabel.place(x=585,y=130)
-pbar.place(x=590,y=155)
-tank.place(x=520,y=155)
+pbar.place(x=595,y=155)
+tank.place(x=525,y=155)
 airComp.place(x=220,y=140)
+clabel1.place(x=267,y=187) 
+tlabel.place(x=330,y=210)
 airComp1.place(x=220,y=275)
+clabel2.place(x=267,y=322) 
+tlabel1.place(x=330,y=340) 
 
 exit_btn.place(x=730,y=380)
 
