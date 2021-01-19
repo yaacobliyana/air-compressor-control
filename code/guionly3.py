@@ -125,16 +125,81 @@ def switchoff():
     circlez()
     
 def on_led1():
-    print('led1 is on')
+    def run():
+        print('led1 is on')
+        start = time.time()
+        i = 0
+        while (i < 10):
+            i = time.time() - start
+            circlez_1a()
+            time.sleep(0.1)
+            circlez_1b()
+            time.sleep(0.1)
+            if switch == False:
+                if not switchoff():
+                    break
+    t = threading.Thread(target=run)
+    t.start()
 
 def off_led1():
+    global switch
+    switch == False
     print('led1 is off')
+    circlez()
 
 def on_led2():
     print('led2 is on')
 
 def off_led2():
     print('led2 is off')
+
+def blink_path1():
+    start = time.time()
+    i = 10
+    while (i > 0):
+        i = 11 - (time.time() - start)
+        tlabel.config(text=str(int(i))+" secs")
+        print('led1 is blinking..')
+        circlez_1a()
+        time.sleep(0.1)
+        circlez_1b()
+        time.sleep(0.1)
+        if (switch==False):
+            break
+       
+ 
+
+def blink_path2():
+    start = time.time()
+    
+    i = 10
+    while (i > 0):
+        i = 11 - (time.time() - start)
+        tlabel1.config(text=str(int(i))+" secs")
+        print('led2 is blinking..')
+        circlez_2a()
+        time.sleep(0.1)
+        circlez_2b()
+        time.sleep(0.1)
+        if switch==False:
+            break
+
+
+def anic1():
+    def run_anic1():
+        full=5
+        i=0
+        while (i<full):
+            i += 1
+            blink_path1()
+            blink_path2()
+            if (i==full or switch == False):
+                if not switchoff():
+                    break
+            
+    tra = threading.Thread(target=run_anic1)
+    tra.start()
+
         
 #Toggle Switch for Compressor 1
 def toggle1():
@@ -169,7 +234,6 @@ def step():
             root.update_idletasks()
             if (i == full or switch == False):
                 break
-            
             
     ts = threading.Thread(target=runn)
     ts.start()
@@ -346,55 +410,6 @@ def circlez_2b():
     c14 = dance.create_oval(295,45,305,55,fill='magenta')
     c15 = dance.create_oval(310,45,320,55,fill='white')
     c16 = dance.create_oval(325,45,335,55,fill='magenta')
-
-def blink_path1():
-    start = time.time()
-    i = 10
-    while (i > 0):
-        i = 11 - (time.time() - start)
-        tlabel.config(text=str(int(i))+" secs")
-        print('led1 is blinking..')
-        circlez_1a()
-        time.sleep(0.1)
-        circlez_1b()
-        time.sleep(0.1)
-        if (switch==False):
-            break
-       
- 
-
-def blink_path2():
-    start = time.time()
-    
-    i = 10
-    while (i > 0):
-        i = 11 - (time.time() - start)
-        tlabel1.config(text=str(int(i))+" secs")
-        print('led2 is blinking..')
-        circlez_2a()
-        time.sleep(0.1)
-        circlez_2b()
-        time.sleep(0.1)
-        if switch==False:
-            break
-    
-
-
-def anic1():
-    def run_anic1():
-        full=5
-        i=0
-        while (i<full):
-            i += 1
-            blink_path1()
-            blink_path2()
-            if (i==full or switch == False):
-                if not switchoff():
-                    break
-            
-    tra = threading.Thread(target=run_anic1)
-    tra.start()
-
 
             
 
