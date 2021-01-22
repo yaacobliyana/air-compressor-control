@@ -435,10 +435,10 @@ dance = Canvas(root, bg='black',width=425,height=265)
 circlez()
 
 #Inserting Elquator Logo
-logo = Image.open('elquator.png')
-resizedlogo = logo.resize((120, 120), Image.ANTIALIAS)
+logo = Image.open('rising_sun.png')
+resizedlogo = logo.resize((160, 126), Image.ANTIALIAS)
 newlogo = ImageTk.PhotoImage(resizedlogo)
-elquator = Label(root, image=newlogo)
+elquator = Label(root, image=newlogo, bg='black')
 
 #Inserting Compressor Icon
 ac = Image.open('aircompp.png')
