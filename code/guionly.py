@@ -378,7 +378,7 @@ def anic1():
 #########################################################
 #
 #Inserting Elquator Logo
-logo = Image.open('elquator.png')
+logo = Image.open('images/elquator.png')
 resizedlogo = logo.resize((120, 120), Image.ANTIALIAS)
 newlogo = ImageTk.PhotoImage(resizedlogo)
 elquator = Label(root, image=newlogo)
@@ -389,19 +389,19 @@ dance = Canvas(root, bg='black',width=425,height=265)
 circlez()
 
 #Inserting Compressor Icon
-ac = Image.open('airComp.png')
+ac = Image.open('images/airComp.png')
 res_ac = ac.resize((105, 100), Image.ANTIALIAS)
 newac = ImageTk.PhotoImage(res_ac)
 airComp = Label(root, image=newac, bg='black')
 
 #Inserting second Compressor Icon
-ac1 = Image.open('airComp.png')
+ac1 = Image.open('images/airComp.png')
 res_ac1 = ac1.resize((105, 100), Image.ANTIALIAS)
 newac1 = ImageTk.PhotoImage(res_ac1)
 airComp1 = Label(root, image=newac1, bg='black')
 
 #Inserting Tank Icon
-gt = Image.open('tank.png')
+gt = Image.open('images/tank.png')
 res_gt = gt.resize((54, 220), Image.ANTIALIAS)
 newgt = ImageTk.PhotoImage(res_gt)
 tank = Label(root, image=newgt, bg='black')

@@ -15,7 +15,7 @@ root = Tk()
 root.geometry("800x420")
 root.title("LED TEST")
 
-bg = Image.open('bgrnd.png')
+bg = Image.open('images/bgrnd.png')
 bgg = ImageTk.PhotoImage(bg)
 
 labelbg = Label(root, image=bgg)
@@ -435,46 +435,46 @@ dance = Canvas(root, bg='black',width=425,height=265)
 circlez()
 
 #Inserting Elquator Logo
-logo = Image.open('rising_sun.png')
+logo = Image.open('images/rising_sun.png')
 resizedlogo = logo.resize((160, 126), Image.ANTIALIAS)
 newlogo = ImageTk.PhotoImage(resizedlogo)
 elquator = Label(root, image=newlogo, bg='black')
 
 #Inserting Compressor Icon
-ac = Image.open('aircompp.png')
+ac = Image.open('images/aircompp.png')
 res_ac = ac.resize((110, 110), Image.ANTIALIAS)
 newac = ImageTk.PhotoImage(res_ac)
 airComp = Label(root, image=newac, bg='black')
 
 #Inserting second Compressor Icon
-ac1 = Image.open('aircompp.png')
+ac1 = Image.open('images/aircompp.png')
 res_ac1 = ac1.resize((110, 110), Image.ANTIALIAS)
 newac1 = ImageTk.PhotoImage(res_ac1)
 airComp1 = Label(root, image=newac1, bg='black')
 
 #Inserting Tank Icon
-gt = Image.open('tank.png')
+gt = Image.open('images/tank.png')
 res_gt = gt.resize((54, 220), Image.ANTIALIAS)
 newgt = ImageTk.PhotoImage(res_gt)
 tank = Label(root, image=newgt, bg='black')
 
 #Inserting Start Button Image
-sb = Image.open('start.png')
+sb = Image.open('images/start.png')
 res_sb = sb.resize((167, 70), Image.ANTIALIAS)
 newsb = ImageTk.PhotoImage(res_sb)
 
 #Inserting Stop Button Image
-stopb = Image.open('stop.png')
+stopb = Image.open('images/stop.png')
 res_stopb = stopb.resize((167, 70), Image.ANTIALIAS)
 newstopb = ImageTk.PhotoImage(res_stopb)
 
 #Inserting ON Button Image
-on = Image.open('on.png')
+on = Image.open('images/on.png')
 res_on = on.resize((80, 80), Image.ANTIALIAS)
 onb = ImageTk.PhotoImage(res_on)
 
 #Inserting OFF Button Image
-off = Image.open('off.png')
+off = Image.open('images/off.png')
 res_off = off.resize((80, 80), Image.ANTIALIAS)
 offb = ImageTk.PhotoImage(res_off)
 
