@@ -9,7 +9,7 @@ import calendar
 import threading
 import datetime as dt
 import RPi.GPIO as GPIO
-
+'''
 #Importing MCP libraries
 import busio
 import digitalio
@@ -22,7 +22,7 @@ cs = digitalio.DigitalInOut(board.D22)
 mcp = MCP.MCP3008(spi, cs)
 chan0 = AnalogIn(mcp, MCP.P0)
 chan1 = AnalogIn(mcp, MCP.P1)
-
+'''
 
 switch = True
 
@@ -134,7 +134,7 @@ def messagebox():
 
     no = Button(my_frame, text="NO", command=lambda: choice("no"), bg="yellow")
     no.grid(row=0, column=2, padx=5)
-
+'''
 def mcp_update():
     global v1
     global v2
@@ -142,20 +142,15 @@ def mcp_update():
     v2 = chan1.voltage
     print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
     print('ADC Voltage 2: ' + str(chan1.voltage) + 'V')
-
+'''
 #Start System function
 def switchon():
     global switch
-    mcp_update()
-    if (v1 > 3.0 and v2 > 3.0):
-        time.sleep(5)
-        switch = True
-        print('System is running')
-        step()
-        anic1()
-    else:
-        switch == False
-        switchoff()
+    #mcp_update()
+    switch = True
+    print('System is running')
+    step()
+    anic1()
 
 #Turning off system function
 def switchoff():
@@ -171,40 +166,32 @@ def blink_path1():
     start = time.time()
     i = 10
     while i > 0:
-        if (v1 > 3.0 and v2 > 3.0):
-            i = 11 - (time.time() - start)
-            tlabel.config(text=str(int(i))+" secs")
-            GPIO.output(led1, True)
-            GPIO.output(led2, False)
-            mcp_update()
-            circlez_1a()
-            time.sleep(0.1)
-            circlez_1b()
-            time.sleep(0.1)
-        else:
-            switch == False
-            switchoff()
+        i = 11 - (time.time() - start)
+        tlabel.config(text=str(int(i))+" secs")
+        GPIO.output(led1, True)
+        GPIO.output(led2, False)
+#        mcp_update()
+        circlez_1a()
+        time.sleep(0.1)
+        circlez_1b()
+        time.sleep(0.1)
         if switch == False:
-                break 
+            break 
  
 
 def blink_path2():
     start = time.time()
     i = 10
     while i > 0:
-        if (v1 > 3.0 and v2 > 3.0):
-            i = 11 - (time.time() - start)
-            tlabel1.config(text=str(int(i))+" secs")
-            GPIO.output(led2, True)
-            GPIO.output(led1, False)
-            mcp_update()
-            circlez_2a()
-            time.sleep(0.1)
-            circlez_2b()
-            time.sleep(0.1)
-        else:
-            switch == False
-            switchoff()
+        i = 11 - (time.time() - start)
+        tlabel1.config(text=str(int(i))+" secs")
+        GPIO.output(led2, True)
+        GPIO.output(led1, False)
+        #mcp_update()
+        circlez_2a()
+        time.sleep(0.1)
+        circlez_2b()
+        time.sleep(0.1)
         if switch == False:
                 break
 
@@ -264,7 +251,7 @@ def on_led2():
     global switch
     switch = True
     print('led2 is on')
-    GPIO.output(led1, True)
+    GPIO.output(led2, True)
     blink_led2()
 
 def off_led2():
