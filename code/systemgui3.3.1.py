@@ -9,6 +9,30 @@ import gaugelib
 import calendar
 import threading
 import datetime as dt
+import RPi.GPIO as GPIO
+
+#Importing MCP libraries
+import busio
+import digitalio
+import board
+import adafruit_mcp3xxx.mcp3008 as MCP
+from adafruit_mcp3xxx.analog_in import AnalogIn
+#defining MCP
+spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
+cs = digitalio.DigitalInOut(board.D22)
+mcp = MCP.MCP3008(spi, cs)
+chan0 = AnalogIn(mcp, MCP.P0)
+chan1 = AnalogIn(mcp, MCP.P1)
+#Adding channel for pressure sensor
+chan2 = AnalogIn(mcp, MCP.P2)
+
+#Defining LEDs setup
+led1 = 23
+led2 = 24
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(led1,GPIO.OUT)
+GPIO.setup(led2,GPIO.OUT)
 
 switch = True
 
@@ -43,12 +67,14 @@ tabs.add(tab2, text="Discharge")
 ##################################################################################
 
 
+#Placing a background image
 bg = Image.open('images/latestbgrnd.png')
 bgg = ImageTk.PhotoImage(bg)
-
 labelbg = Label(tab1, image=bgg)
 labelbg.place(x=0, y=0, relwidth=1, relheight=1)
 
+#Class for displaying time and date
+#
 class Clock(Label):
     """ Class that contains the clock widget and clock refresh """
 
@@ -58,7 +84,6 @@ class Clock(Label):
         It's an ordinary Label element with two additional features.
         """
         Label.__init__(self, parent)
-
         self.display_seconds = seconds
         if self.display_seconds:
             self.time     = time.strftime('%I:%M:%S %p')
@@ -69,9 +94,7 @@ class Clock(Label):
 
         if colon:
             self.blink_colon()
-
         self.after(200, self.tick)
-
 
     def tick(self):
         """ Updates the display clock every 200 milliseconds """
@@ -85,7 +108,6 @@ class Clock(Label):
             self.config(text=self.display_time)
         self.after(200, self.tick)
 
-
     def blink_colon(self):
         """ Blink the colon every second """
         if ':' in self.display_time:
@@ -94,8 +116,10 @@ class Clock(Label):
             self.display_time = self.display_time.replace(' ',':',1)
         self.config(text=self.display_time)
         self.after(1000, self.blink_colon)
-        
 
+
+#Spawning Message box for Warning
+#
 def choice(option):
     pop.destroy()
 
@@ -108,7 +132,7 @@ def choice(option):
 def messagebox():
 
     global pop
-    pop = Toplevel(tab1)
+    pop = Toplevel(root)
     pop.title("Warning Message")
     pop.config(bg='white')
     pop.geometry("250x120")
@@ -137,21 +161,93 @@ def messagebox():
     no.grid(row=0, column=2, padx=5)
 
 
+def mcp_update():
+    global v1
+    global v2
+    v1 = chan0.voltage
+    v2 = chan1.voltage
+    print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
+    print('ADC Voltage 2: ' + str(chan1.voltage) + 'V')
+
+#Start System function
 def switchon():
     global switch
-    switch = True
-    print('System is running')
-    # startSystem()
-    step()
-    anic1()
-    
+    mcp_update()
+    if (v1 > 3.0 and v2 > 3.0):
+        time.sleep(5)
+        switch = True
+        print('System is running')
+        step()
+        anic1()
+    else:
+        switch == False
+        switchoff()
+
+#Turning off system function
 def switchoff():
     print('System exited')
     global switch
     switch = False
+    GPIO.output(led1, False)
+    GPIO.output(led2, False)
     #bstop()
     circlez()
     
+def blink_path1():
+    start = time.time()
+    i = 10
+    while i > 0:
+        if (v1 > 3.0 and v2 > 3.0):
+            i = 11 - (time.time() - start)
+            tlabel.config(text=str(int(i))+" secs")
+            GPIO.output(led1, True)
+            GPIO.output(led2, False)
+            mcp_update()
+            circlez_1a()
+            time.sleep(0.1)
+            circlez_1b()
+            time.sleep(0.1)
+        else:
+            switch == False
+            switchoff()
+        if switch == False:
+                break 
+ 
+
+def blink_path2():
+    start = time.time()
+    i = 10
+    while i > 0:
+        if (v1 > 3.0 and v2 > 3.0):
+            i = 11 - (time.time() - start)
+            tlabel1.config(text=str(int(i))+" secs")
+            GPIO.output(led2, True)
+            GPIO.output(led1, False)
+            mcp_update()
+            circlez_2a()
+            time.sleep(0.1)
+            circlez_2b()
+            time.sleep(0.1)
+        else:
+            switch == False
+            switchoff()
+        if switch == False:
+                break
+
+def anic1():
+    def run_anic1():
+        full=5
+        i=0
+        while (i<full):
+            i += 1
+            blink_path1()
+            blink_path2()
+            if (i==full or switch == False):
+                if not switchoff():
+                    break
+    tra = threading.Thread(target=run_anic1)
+    tra.start()
+
 def blink_led1():
     def run():
         while switch == True:
@@ -168,8 +264,14 @@ def on_led1():
     global switch
     switch = True
     print('led1 is on')
+    GPIO.output(led1, True)
     blink_led1()
 
+def off_led1():
+    global switch
+    switch = False
+    GPIO.output(led1, False)
+    circlez()
 
 def blink_led2():
     def run():
@@ -187,68 +289,26 @@ def on_led2():
     global switch
     switch = True
     print('led2 is on')
+    GPIO.output(led2, True)
     blink_led2()
 
-
-def blink_path1():
-    start = time.time()
-    i = 10
-    while (i > 0):
-        i = 11 - (time.time() - start)
-        tlabel.config(text=str(int(i))+" secs")
-        print('led1 is blinking..')
-        circlez_1a()
-        time.sleep(0.1)
-        circlez_1b()
-        time.sleep(0.1)
-        if (switch==False):
-            break
-       
- 
-
-def blink_path2():
-    start = time.time()
-    
-    i = 10
-    while (i > 0):
-        i = 11 - (time.time() - start)
-        tlabel1.config(text=str(int(i))+" secs")
-        print('led2 is blinking..')
-        circlez_2a()
-        time.sleep(0.1)
-        circlez_2b()
-        time.sleep(0.1)
-        if switch==False:
-            break
-
-
-def anic1():
-    def run_anic1():
-        full=5
-        i=0
-        while (i<full):
-            i += 1
-            blink_path1()
-            blink_path2()
-            if (i==full or switch == False):
-                if not switchoff():
-                    break
-            
-    tra = threading.Thread(target=run_anic1)
-    tra.start()
-
+def off_led2():
+    global switch
+    switch = False
+    print('led2 is off')
+    GPIO.output(led2, False)
+    circlez()
         
 #Toggle Switch for Compressor 1
 def toggle1():
     if led1_btn.config('text')[-1] == 'ON':
         led1_btn.config(text='OFF', image=offb, bg='black', borderwidth=0,
                         activebackground='black')
-        print ("pressed true")
         on_led1()
     else:
         led1_btn.config(text='ON', image=onb, bg='black', borderwidth=0,
                         activebackground='black')
-        switchoff()
+        off_led1()
 
 
 #Toggle Switch for Compressor 2
@@ -256,12 +316,11 @@ def toggle2():
     if led2_btn.config('text')[-1] == 'ON':
         led2_btn.config(text='OFF', image=offb, bg='black', borderwidth=0,
                         activebackground='black')
-        print ("pressed true")
         on_led2()
     else:
         led2_btn.config(text='ON', image=onb, bg='black', borderwidth=0,
                         activebackground='black')
-        switchoff()
+        off_led2()
         
 def step():
     def runn():
@@ -275,7 +334,6 @@ def step():
             root.update_idletasks()
             if (i == full or switch == False):
                 break
-            
     ts = threading.Thread(target=runn)
     ts.start()
     
@@ -383,7 +441,7 @@ def circlez_1b():
     c29 = dance.create_oval(220,120,230,130,fill='white')
     c30 = dance.create_oval(220,105,230,115,fill='white')
     c31 = dance.create_oval(220,90,230,100,fill='white')
-
+    
 def circlez_2a():
     c1 = dance.create_oval(130,75,140,85,fill='white')
     c2 = dance.create_oval(145,75,155,85,fill='white')
@@ -451,8 +509,8 @@ def circlez_2b():
     c14 = dance.create_oval(295,45,305,55,fill='magenta')
     c15 = dance.create_oval(310,45,320,55,fill='white')
     c16 = dance.create_oval(325,45,335,55,fill='magenta')
-
             
+    
 
 #########################################################
 #                                                       #
@@ -460,9 +518,8 @@ def circlez_2b():
 #                                                       #
 #########################################################
 #
-
 #Inserting frame for animation
-dance = Canvas(tab1, bg='black',width=425,height=265)
+dance = Canvas(root, bg='black',width=425,height=265)
 #Draw many many circles (put in a function)
 circlez()
 
@@ -470,19 +527,19 @@ circlez()
 ac = Image.open('images/aircompp.png')
 res_ac = ac.resize((110, 110), Image.ANTIALIAS)
 newac = ImageTk.PhotoImage(res_ac)
-airComp = Label(tab1, image=newac, bg='black')
+airComp = Label(root, image=newac, bg='black')
 
 #Inserting second Compressor Icon
 ac1 = Image.open('images/aircompp.png')
-res_ac1 = ac1.resize((110, 110), Image.ANTIALIAS)
+res_ac1 = ac1.resize((110,110), Image.ANTIALIAS)
 newac1 = ImageTk.PhotoImage(res_ac1)
-airComp1 = Label(tab1, image=newac1, bg='black')
+airComp1 = Label(root, image=newac1, bg='black')
 
 #Inserting Tank Icon
 gt = Image.open('images/tank.png')
 res_gt = gt.resize((54, 220), Image.ANTIALIAS)
 newgt = ImageTk.PhotoImage(res_gt)
-tank = Label(tab1, image=newgt, bg='black')
+tank = Label(root, image=newgt, bg='black')
 
 #Inserting Start Button Image
 sb = Image.open('images/start.png')
@@ -504,26 +561,20 @@ off = Image.open('images/off.png')
 res_off = off.resize((80, 80), Image.ANTIALIAS)
 offb = ImageTk.PhotoImage(res_off)
 
-#Inserting discharge Button Image
-db = Image.open('images/discharge.png')
-res_db = db.resize((150, 30), Image.ANTIALIAS)
-newdb = ImageTk.PhotoImage(res_db)
 
 #Inserting clock
 clock1 = Clock(tab1)
-clock1.configure(bg='black',fg='white',font=("Quicksand",16, 'bold'))
+clock1.configure(bg='black',fg='white',font=("helvetica",16, 'bold'))
 #Adding date
 date = Label(tab1, text=f"{dt.datetime.now():%a, %b %d %Y}",
              fg="white", bg="black", font=("helvetica",14))
 
-
 #START Button
 start_btn = Button(tab1, image=newsb, command=messagebox, 
-                    borderwidth=0, bg='black',activebackground='black')
-
+                    borderwidth=0, bg='black', activebackground='black')
+#STOP Button
 stop_btn = Button(tab1, image=newstopb, command=switchoff,
                     borderwidth=0, bg='black',activebackground='black')
-
 
 #ON_LED1 Toggle Button
 led1_btn = Button(tab1, text='ON', image=onb, command=toggle1,
@@ -541,33 +592,30 @@ pbar = ttk.Progressbar(tab1, orient=VERTICAL,
 plabel = Label(tab1, textvariable=percent, font=('Quicksand',10),
                 bg='black', fg='white')
 
-
-#Inserting exit button
-exit_btn = Button(tab1, text="Quit", width=4, height=1,
-                  bg="black", fg="white",
-                  command=lambda root=root:quit(root))
-
-#Inserting timer label
-tlabel = Label(tab1, text=' ',
-              font=('Quicksand', 14),
-              bg='black', fg='white')
-
 #Inserting timer1 label
-tlabel1 = Label(tab1, text=' ',
-              font=('Quicksand', 14),
-          bg='black', fg='white' )
+tlabel = Label(tab1, text=' ', font=('Quicksand', 14),
+                bg='black', fg='white')
+
+#Inserting timer2 label
+tlabel1 = Label(tab1, text=' ', font=('Quicksand', 14),
+                bg='black', fg='white' )
 
 #Inserting compressor 1 label
 clabel1 = Label(tab1, text='C1', font=('URW Gothic L', 14, 'bold'),
           bg='black', fg='white' )
 
-
 #Inserting compressor 2 label
 clabel2 = Label(tab1, text='C2', font=('URW Gothic L', 14, 'bold'),
           bg='black', fg='white' )
 
+#Inserting button for tabs navigation
 btab2 = Button(tab1, image=newdb, command=select2,
         borderwidth=0, bg='black',activebackground='black')
+
+#Inserting exit button
+exit_btn = Button(tab1, text="Quit", width=4, height=1,
+                  bg="black", fg="white",
+                  command=lambda root=root:quit(root))
 
 
 #.................................#
@@ -596,8 +644,6 @@ tlabel1.place(x=330,y=325)
 
 exit_btn.place(x=750,y=360)
 
-
-
 #................................................................................#
 ##################################################################################
 #                                                                                #
@@ -615,21 +661,24 @@ bgg1 = ImageTk.PhotoImage(bg1)
 labelbg1 = Label(tab2, image=bgg1)
 labelbg1.place(x=0, y=0, relwidth=1, relheight=1)
 
-g_value=0
+
 f=0
 g=0
+
+v3 = chan2.voltage
+g_value=((66.7*v3)-0.488)
 
 def read_gauge():
     def run():
         global f
         global g_value
-        while (g_value<100):
+        while (g_value<100.0):
             time.sleep(0.2)
-            g_value+=1
             f+=1
             if f>100:
                 f=0
             p1.set_value(int(g_value))
+            print('ADC Voltage 1: ' + str(chan2.voltage) + 'V')
             root.update_idletasks()
             #root.after(100,read_gauge)
             if(g_value==100 or switch==False):
@@ -643,7 +692,7 @@ def read_gauge2():
     p2.set_value(int(ga_value))
     g+=1
     if g>100:
-        f=0
+        g=0
     root.after(200,read_gauge2)
 
 def start_valve():
@@ -824,5 +873,5 @@ valve_btn.place(x=25,y=200)
 p1.place(x=230,y=250)
 p2.place(x=230,y=110)
 
-root.mainloop()
 
+root.mainloop()
