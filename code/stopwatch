@@ -1,8 +1,0 @@
-import time
-
-def stopwatch():
-	start = time.time()
-	time.clock()
-	elapsed = 0
-	while elapsed < seconds:
-		

@@ -5,6 +5,7 @@ from PIL import ImageTk,Image
 import sys
 import time
 import random
+import gaugelib
 import calendar
 import threading
 import datetime as dt
@@ -550,25 +551,20 @@ exit_btn = Button(tab1, text="Quit", width=4, height=1,
 tlabel = Label(tab1, text=' ',
               font=('Quicksand', 14),
               bg='black', fg='white')
-tlabel.place(x=330,y=195)
 
 #Inserting timer1 label
 tlabel1 = Label(tab1, text=' ',
               font=('Quicksand', 14),
           bg='black', fg='white' )
-tlabel1.place(x=330,y=325) 
-
 
 #Inserting compressor 1 label
 clabel1 = Label(tab1, text='C1', font=('URW Gothic L', 14, 'bold'),
           bg='black', fg='white' )
-clabel1.place(x=262,y=172) 
 
 
 #Inserting compressor 2 label
 clabel2 = Label(tab1, text='C2', font=('URW Gothic L', 14, 'bold'),
           bg='black', fg='white' )
-clabel2.place(x=262,y=307) 
 
 btab2 = Button(tab1, image=newdb, command=select2,
         borderwidth=0, bg='black',activebackground='black')
@@ -580,7 +576,7 @@ btab2 = Button(tab1, image=newdb, command=select2,
 
 btab2.place(x=635,y=70)
 date.place(x=260,y=70)
-clock1.place(x=420,y=70)
+clock1.place(x=425,y=70)
 
 start_btn.place(x=15,y=225)
 stop_btn.place(x=15,y=305)
@@ -588,11 +584,15 @@ led1_btn.place(x=680,y=140)
 led2_btn.place(x=680,y=260)
 
 dance.place(x=200,y=105)
-plabel.place(x=580,y=120)
+plabel.place(x=580,y=115)
 pbar.place(x=590,y=140)
 tank.place(x=520,y=140)
 airComp.place(x=213,y=117)
+clabel1.place(x=262,y=172) 
+tlabel.place(x=330,y=195)
 airComp1.place(x=213,y=252)
+clabel2.place(x=262,y=307) 
+tlabel1.place(x=330,y=325) 
 
 exit_btn.place(x=750,y=360)
 
@@ -615,11 +615,62 @@ bgg1 = ImageTk.PhotoImage(bg1)
 labelbg1 = Label(tab2, image=bgg1)
 labelbg1.place(x=0, y=0, relwidth=1, relheight=1)
 
+g_value=0
+f=0
+g=0
+
+def read_gauge():
+    def run():
+        global f
+        global g_value
+        while (g_value<100):
+            time.sleep(0.2)
+            g_value+=1
+            f+=1
+            if f>100:
+                f=0
+            p1.set_value(int(g_value))
+            root.update_idletasks()
+            #root.after(100,read_gauge)
+            if(g_value==100 or switch==False):
+                break
+    t = threading.Thread(target=run)
+    t.start()
+
+def read_gauge2():
+    global g
+    ga_value=random.randint(0,100)
+    p2.set_value(int(ga_value))
+    g+=1
+    if g>100:
+        f=0
+    root.after(200,read_gauge2)
+
+def start_valve():
+    def run():
+        while switch == True:
+            circles1()
+            time.sleep(0.1)
+            circles2()
+            time.sleep(0.1)
+            if switch == False:
+                break
+    t = threading.Thread(target=run)
+    t.start()
+
 def open_valve():
     print('Valve is open')
+    global switch
+    switch = True
+    start_valve()
+    read_gauge()
+    read_gauge2()
 
 def close_valve():
     print('Valve is close')
+    global switch
+    switch = False
+    circles()
 
 #Toggle Switch for Valve
 def toggle_valve():
@@ -636,7 +687,67 @@ def toggle_valve():
 
 def circles():
     s1 = rock.create_oval(105,40,115,50,fill='white')
-    
+    s2 = rock.create_oval(120,40,130,50,fill='white')
+    s3 = rock.create_oval(135,40,145,50,fill='white')
+    s4 = rock.create_oval(150,40,160,50,fill='white')
+    s5 = rock.create_oval(165,40,175,50,fill='white')
+    s6 = rock.create_oval(180,40,190,50,fill='white')
+    s7 = rock.create_oval(180,55,190,65,fill='white')
+    s8 = rock.create_oval(180,70,190,80,fill='white')
+    s9 = rock.create_oval(180,85,190,95,fill='white')
+    s10 = rock.create_oval(180,100,190,110,fill='white')
+    s11 = rock.create_oval(180,115,190,125,fill='white')
+    s12 = rock.create_oval(180,130,190,140,fill='white')
+    s13 = rock.create_oval(180,145,190,155,fill='white')
+    s14 = rock.create_oval(180,160,190,170,fill='white')
+    s15 = rock.create_oval(180,175,190,185,fill='white')
+    s16 = rock.create_oval(180,190,190,200,fill='white')
+    s17 = rock.create_oval(195,190,205,200,fill='white')
+    s18 = rock.create_oval(210,190,220,200,fill='white')
+    s19 = rock.create_oval(225,190,235,200,fill='white')
+
+def circles1():
+    s1 = rock.create_oval(105,40,115,50,fill='orange')
+    s2 = rock.create_oval(120,40,130,50,fill='white')
+    s3 = rock.create_oval(135,40,145,50,fill='orange')
+    s4 = rock.create_oval(150,40,160,50,fill='white')
+    s5 = rock.create_oval(165,40,175,50,fill='orange')
+    s6 = rock.create_oval(180,40,190,50,fill='white')
+    s7 = rock.create_oval(180,55,190,65,fill='orange')
+    s8 = rock.create_oval(180,70,190,80,fill='white')
+    s9 = rock.create_oval(180,85,190,95,fill='orange')
+    s10 = rock.create_oval(180,100,190,110,fill='white')
+    s11 = rock.create_oval(180,115,190,125,fill='orange')
+    s12 = rock.create_oval(180,130,190,140,fill='white')
+    s13 = rock.create_oval(180,145,190,155,fill='orange')
+    s14 = rock.create_oval(180,160,190,170,fill='white')
+    s15 = rock.create_oval(180,175,190,185,fill='orange')
+    s16 = rock.create_oval(180,190,190,200,fill='white')
+    s17 = rock.create_oval(195,190,205,200,fill='orange')
+    s18 = rock.create_oval(210,190,220,200,fill='white')
+    s19 = rock.create_oval(225,190,235,200,fill='orange')
+
+def circles2():
+    s1 = rock.create_oval(105,40,115,50,fill='white')
+    s2 = rock.create_oval(120,40,130,50,fill='orange')
+    s3 = rock.create_oval(135,40,145,50,fill='white')
+    s4 = rock.create_oval(150,40,160,50,fill='orange')
+    s5 = rock.create_oval(165,40,175,50,fill='white')
+    s6 = rock.create_oval(180,40,190,50,fill='orange')
+    s7 = rock.create_oval(180,55,190,65,fill='white')
+    s8 = rock.create_oval(180,70,190,80,fill='orange')
+    s9 = rock.create_oval(180,85,190,95,fill='white')
+    s10 = rock.create_oval(180,100,190,110,fill='orange')
+    s11 = rock.create_oval(180,115,190,125,fill='white')
+    s12 = rock.create_oval(180,130,190,140,fill='orange')
+    s13 = rock.create_oval(180,145,190,155,fill='white')
+    s14 = rock.create_oval(180,160,190,170,fill='orange')
+    s15 = rock.create_oval(180,175,190,185,fill='white')
+    s16 = rock.create_oval(180,190,190,200,fill='orange')
+    s17 = rock.create_oval(195,190,205,200,fill='white')
+    s18 = rock.create_oval(210,190,220,200,fill='orange')
+    s19 = rock.create_oval(225,190,235,200,fill='white')
+
 
 #########################################################
 #                                                       #
@@ -653,7 +764,7 @@ date2 = Label(tab2, text=f"{dt.datetime.now():%a, %b %d %Y}",
              fg="white", bg="black", font=("helvetica",14))
 
 #Inserting frame for animation
-rock = Canvas(tab2, bg='black',width=425,height=265)
+rock = Canvas(tab2, bg='black',width=400,height=265)
 circles()
 
 #Inserting Tank Image
@@ -683,6 +794,15 @@ rb = Image.open('images/refill.png')
 res_rb = rb.resize((150, 30), Image.ANTIALIAS)
 newrb = ImageTk.PhotoImage(res_rb)
 
+#Inserting gauge widget
+p1 = gaugelib.DrawGauge2(tab2, max_value=100.0, min_value=0.0,
+                        size=140, bg_col='black',
+                        unit="psi", bg_sel=2)
+#Inserting gauge widget
+p2 = gaugelib.DrawGauge2(tab2, max_value=100.0, min_value=0.0,
+                        size=140, bg_col='black',
+                        unit="psi", bg_sel=2)
+
 btab1 = Button(tab2, image=newrb, command=select1,
                 borderwidth=0, bg='black',activebackground='black')
 
@@ -693,14 +813,16 @@ valve_btn = Button(tab2, text='open', image=newob, command=toggle_valve,
 
 ##....DISPLAYING VARIABLE ON SCREEN.....##
 #
-rock.place(x=355,y=110)
+rock.place(x=380,y=110)
 btab1.place(x=635,y=70)
 date2.place(x=260,y=70)
-clock2.place(x=420,y=70)
-tank2.place(x=400, y=137)
-generator.place(x=610,y=217)
+clock2.place(x=425,y=70)
+tank2.place(x=427, y=137)
+generator.place(x=620,y=217)
 valve_btn.place(x=25,y=200)
 
+p1.place(x=230,y=250)
+p2.place(x=230,y=110)
 
 root.mainloop()
 
