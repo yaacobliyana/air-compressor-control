@@ -661,6 +661,7 @@ bgg1 = ImageTk.PhotoImage(bg1)
 labelbg1 = Label(tab2, image=bgg1)
 labelbg1.place(x=0, y=0, relwidth=1, relheight=1)
 
+svalve = 25
 
 f=0
 g=0
@@ -711,6 +712,7 @@ def open_valve():
     print('Valve is open')
     global switch
     switch = True
+    GPIO.output(svalve, True)
     start_valve()
     read_gauge()
     read_gauge2()
@@ -719,6 +721,7 @@ def close_valve():
     print('Valve is close')
     global switch
     switch = False
+    GPIO.output(svalve, False)
     circles()
 
 #Toggle Switch for Valve
