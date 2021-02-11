@@ -652,18 +652,21 @@ bgg1 = ImageTk.PhotoImage(bg1)
 labelbg1 = Label(tab2, image=bgg1)
 labelbg1.place(x=0, y=0, relwidth=1, relheight=1)
 
+svalve = 25
 
 f=0
 g=0
 
+v3 = chan2.voltage
+g_value = 66.7*(int(v3))
+
 def read_gauge():
     def run():
-        v3 = chan2.voltage
+        global f
+        global g_value
         while (switch == True):
-            g_value = 66.7*v3
             p1.set_value(int(g_value))
             print('ADC Voltage 1: ' + str(chan2.voltage) + 'V')
-            print('Pressure: ' + str(int(g_value)) + 'bar')
             #root.update_idletasks()
             #root.after(100,read_gauge)
             if(switch==False):
@@ -696,6 +699,7 @@ def open_valve():
     print('Valve is open')
     global switch
     switch = True
+    GPIO.output(svalve, True)
     start_valve()
     read_gauge()
     read_gauge2()
@@ -704,6 +708,7 @@ def close_valve():
     print('Valve is close')
     global switch
     switch = False
+    GPIO.output(svalve, False)
     circles()
 
 #Toggle Switch for Valve
@@ -829,7 +834,7 @@ res_rb = rb.resize((150, 30), Image.ANTIALIAS)
 newrb = ImageTk.PhotoImage(res_rb)
 
 #Inserting gauge widget
-p1 = gaugelib.DrawGauge2(tab2, max_value=300.0, min_value=0.0,
+p1 = gaugelib.DrawGauge2(tab2, max_value=3.3, min_value=0.0,
                         size=140, bg_col='black',
                         unit="psi", bg_sel=2)
 #Inserting gauge widget
