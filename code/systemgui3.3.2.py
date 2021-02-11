@@ -172,17 +172,12 @@ def mcp_update():
 #Start System function
 def switchon():
     global switch
-    mcp_update()
-    if (v1 > 3.0 and v2 > 3.0):
-        time.sleep(5)
-        switch = True
-        print('System is running')
-        step()
-        anic1()
-    else:
-        switch == False
-        switchoff()
-
+    #mcp_update()
+    switch = True
+    print('System is running')
+    step()
+    anic1()
+    
 #Turning off system function
 def switchoff():
     print('System exited')
@@ -197,19 +192,15 @@ def blink_path1():
     start = time.time()
     i = 10
     while i > 0:
-        if (v1 > 3.0 and v2 > 3.0):
-            i = 11 - (time.time() - start)
-            tlabel.config(text=str(int(i))+" secs")
-            GPIO.output(led1, True)
-            GPIO.output(led2, False)
-            mcp_update()
-            circlez_1a()
-            time.sleep(0.1)
-            circlez_1b()
-            time.sleep(0.1)
-        else:
-            switch == False
-            switchoff()
+        i = 11 - (time.time() - start)
+        tlabel.config(text=str(int(i))+" secs")
+        GPIO.output(led1, True)
+        GPIO.output(led2, False)
+        #mcp_update()
+        circlez_1a()
+        time.sleep(0.1)
+        circlez_1b()
+        time.sleep(0.1)
         if switch == False:
                 break 
  
@@ -218,19 +209,15 @@ def blink_path2():
     start = time.time()
     i = 10
     while i > 0:
-        if (v1 > 3.0 and v2 > 3.0):
-            i = 11 - (time.time() - start)
-            tlabel1.config(text=str(int(i))+" secs")
-            GPIO.output(led2, True)
-            GPIO.output(led1, False)
-            mcp_update()
-            circlez_2a()
-            time.sleep(0.1)
-            circlez_2b()
-            time.sleep(0.1)
-        else:
-            switch == False
-            switchoff()
+        i = 11 - (time.time() - start)
+        tlabel1.config(text=str(int(i))+" secs")
+        GPIO.output(led2, True)
+        GPIO.output(led1, False)
+        #mcp_update()
+        circlez_2a()
+        time.sleep(0.1)
+        circlez_2b()
+        time.sleep(0.1)
         if switch == False:
                 break
 
@@ -669,23 +656,19 @@ labelbg1.place(x=0, y=0, relwidth=1, relheight=1)
 f=0
 g=0
 
-v3 = chan2.voltage
-g_value=((66.7*v3)-0.488)
+g_value = chan2.voltage
+
 
 def read_gauge():
     def run():
         global f
         global g_value
-        while (g_value<100.0):
-            time.sleep(0.2)
-            f+=1
-            if f>100:
-                f=0
-            p1.set_value(int(g_value))
+        while (switch == True):
+            p1.set_value(int(chan2.voltage))
             print('ADC Voltage 1: ' + str(chan2.voltage) + 'V')
-            root.update_idletasks()
+            #root.update_idletasks()
             #root.after(100,read_gauge)
-            if(g_value==100 or switch==False):
+            if(switch==False):
                 break
     t = threading.Thread(target=run)
     t.start()
@@ -848,7 +831,7 @@ res_rb = rb.resize((150, 30), Image.ANTIALIAS)
 newrb = ImageTk.PhotoImage(res_rb)
 
 #Inserting gauge widget
-p1 = gaugelib.DrawGauge2(tab2, max_value=300.0, min_value=0.0,
+p1 = gaugelib.DrawGauge2(tab2, max_value=3.3, min_value=0.0,
                         size=140, bg_col='black',
                         unit="psi", bg_sel=2)
 #Inserting gauge widget

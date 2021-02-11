@@ -5,7 +5,6 @@ from PIL import ImageTk,Image
 import sys
 import time
 import random
-import gaugelib
 import calendar
 import threading
 import datetime as dt
@@ -23,8 +22,19 @@ cs = digitalio.DigitalInOut(board.D22)
 mcp = MCP.MCP3008(spi, cs)
 chan0 = AnalogIn(mcp, MCP.P0)
 chan1 = AnalogIn(mcp, MCP.P1)
-#Adding channel for pressure sensor
 chan2 = AnalogIn(mcp, MCP.P2)
+
+switch = True
+
+root = Tk()
+root.geometry("800x420")
+root.title("LED TEST")
+
+#Placing a background image
+bg = Image.open('bgrnd.png')
+bgg = ImageTk.PhotoImage(bg)
+labelbg = Label(root, image=bgg)
+labelbg.place(x=0, y=0, relwidth=1, relheight=1)
 
 #Defining LEDs setup
 led1 = 23
@@ -33,45 +43,6 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(led1,GPIO.OUT)
 GPIO.setup(led2,GPIO.OUT)
-
-switch = True
-
-root = Tk()
-root.geometry("800x420")
-root.title("AIR COMPRESSOR CONTROL SYSTEM")
-
-tabs = ttk.Notebook(root)
-tabs.pack()
-
-def select1():
-    tabs.select(0)
-
-def select2():
-    tabs.select(1)
-
-tab1 = Frame(tabs, width=800, height=420, bg='black')
-tab2 = Frame(tabs, width=800, height=420, bg='black')
-tab1.pack(fill="both", expand=1)
-tab2.pack(fill="both", expand=1)
-tabs.add(tab1, text="Refill", state='hidden')
-tabs.add(tab2, text="Discharge")
-# tabs.hide(0)
-#tabs.hide(1)
-
-##################################################################################
-#                                                                                #
-#                                                                                #
-# # # # # # # # # # # # #    FIRST TAB OF INTERFACE    # # # # # # # # # # # # # #        
-#                                                                                #
-#                                                                                #
-##################################################################################
-
-
-#Placing a background image
-bg = Image.open('images/latestbgrnd.png')
-bgg = ImageTk.PhotoImage(bg)
-labelbg = Label(tab1, image=bgg)
-labelbg.place(x=0, y=-15, relwidth=1, relheight=1)
 
 #Class for displaying time and date
 #
@@ -84,6 +55,7 @@ class Clock(Label):
         It's an ordinary Label element with two additional features.
         """
         Label.__init__(self, parent)
+
         self.display_seconds = seconds
         if self.display_seconds:
             self.time     = time.strftime('%I:%M:%S %p')
@@ -94,7 +66,9 @@ class Clock(Label):
 
         if colon:
             self.blink_colon()
+
         self.after(200, self.tick)
+
 
     def tick(self):
         """ Updates the display clock every 200 milliseconds """
@@ -107,6 +81,7 @@ class Clock(Label):
             self.display_time = self.time
             self.config(text=self.display_time)
         self.after(200, self.tick)
+
 
     def blink_colon(self):
         """ Blink the colon every second """
@@ -138,7 +113,7 @@ def messagebox():
     pop.geometry("250x120")
 
     global warn
-    warn = PhotoImage(file="images/warning.png")
+    warn = PhotoImage(file="warning.png")
 
     pop_label1 = Label(pop, text="You are about to start the system.", 
                         font=("URW Gothic L", 12))
@@ -159,8 +134,7 @@ def messagebox():
 
     no = Button(my_frame, text="NO", command=lambda: choice("no"), bg="yellow")
     no.grid(row=0, column=2, padx=5)
-
-
+'''
 def mcp_update():
     global v1
     global v2
@@ -168,20 +142,15 @@ def mcp_update():
     v2 = chan1.voltage
     print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
     print('ADC Voltage 2: ' + str(chan1.voltage) + 'V')
-
+'''
 #Start System function
 def switchon():
     global switch
-    mcp_update()
-    if (v1 > 3.0 and v2 > 3.0):
-        time.sleep(5)
-        switch = True
-        print('System is running')
-        step()
-        anic1()
-    else:
-        switch == False
-        switchoff()
+    #mcp_update()
+    switch = True
+    print('System is running')
+    step()
+    anic1()
 
 #Turning off system function
 def switchoff():
@@ -197,40 +166,32 @@ def blink_path1():
     start = time.time()
     i = 10
     while i > 0:
-        if (v1 > 3.0 and v2 > 3.0):
-            i = 11 - (time.time() - start)
-            tlabel.config(text=str(int(i))+" secs")
-            GPIO.output(led1, True)
-            GPIO.output(led2, False)
-            mcp_update()
-            circlez_1a()
-            time.sleep(0.1)
-            circlez_1b()
-            time.sleep(0.1)
-        else:
-            switch == False
-            switchoff()
+        i = 11 - (time.time() - start)
+        tlabel.config(text=str(int(i))+" secs")
+        GPIO.output(led1, True)
+        GPIO.output(led2, False)
+#        mcp_update()
+        circlez_1a()
+        time.sleep(0.1)
+        circlez_1b()
+        time.sleep(0.1)
         if switch == False:
-                break 
+            break 
  
 
 def blink_path2():
     start = time.time()
     i = 10
     while i > 0:
-        if (v1 > 3.0 and v2 > 3.0):
-            i = 11 - (time.time() - start)
-            tlabel1.config(text=str(int(i))+" secs")
-            GPIO.output(led2, True)
-            GPIO.output(led1, False)
-            mcp_update()
-            circlez_2a()
-            time.sleep(0.1)
-            circlez_2b()
-            time.sleep(0.1)
-        else:
-            switch == False
-            switchoff()
+        i = 11 - (time.time() - start)
+        tlabel1.config(text=str(int(i))+" secs")
+        GPIO.output(led2, True)
+        GPIO.output(led1, False)
+        #mcp_update()
+        circlez_2a()
+        time.sleep(0.1)
+        circlez_2b()
+        time.sleep(0.1)
         if switch == False:
                 break
 
@@ -247,6 +208,7 @@ def anic1():
                     break
     tra = threading.Thread(target=run_anic1)
     tra.start()
+
 
 def blink_led1():
     def run():
@@ -295,31 +257,28 @@ def on_led2():
 def off_led2():
     global switch
     switch = False
-    print('led2 is off')
     GPIO.output(led2, False)
     circlez()
         
 #Toggle Switch for Compressor 1
 def toggle1():
     if led1_btn.config('text')[-1] == 'ON':
-        led1_btn.config(text='OFF', image=offb, bg='black', borderwidth=0,
-                        activebackground='black')
+        led1_btn.config(text='OFF', image=offb, bg='black', borderwidth=0)
+        print ("pressed true")
         on_led1()
     else:
-        led1_btn.config(text='ON', image=onb, bg='black', borderwidth=0,
-                        activebackground='black')
+        led1_btn.config(text='ON', image=onb, bg='black', borderwidth=0)
         off_led1()
 
 
 #Toggle Switch for Compressor 2
 def toggle2():
     if led2_btn.config('text')[-1] == 'ON':
-        led2_btn.config(text='OFF', image=offb, bg='black', borderwidth=0,
-                        activebackground='black')
+        led2_btn.config(text='OFF', image=offb, bg='black', borderwidth=0)
+        print ("pressed true")
         on_led2()
     else:
-        led2_btn.config(text='ON', image=onb, bg='black', borderwidth=0,
-                        activebackground='black')
+        led2_btn.config(text='ON', image=onb, bg='black', borderwidth=0)
         off_led2()
         
 def step():
@@ -519,363 +478,130 @@ def circlez_2b():
 #########################################################
 #
 #Inserting frame for animation
-dance = Canvas(tab1, bg='black',width=425,height=265)
+dance = Canvas(root, bg='black',width=425,height=265)
 #Draw many many circles (put in a function)
 circlez()
 
+#Inserting Elquator Logo
+logo = Image.open('rising_sun.png')
+resizedlogo = logo.resize((160, 126), Image.ANTIALIAS)
+newlogo = ImageTk.PhotoImage(resizedlogo)
+elquator = Label(root, image=newlogo, bg='black')
+
 #Inserting Compressor Icon
-ac = Image.open('images/aircompp.png')
-res_ac = ac.resize((110, 110), Image.ANTIALIAS)
+ac = Image.open('airComp.png')
+res_ac = ac.resize((105, 100), Image.ANTIALIAS)
 newac = ImageTk.PhotoImage(res_ac)
-airComp = Label(tab1, image=newac, bg='black')
+airComp = Label(root, image=newac, bg='black')
 
 #Inserting second Compressor Icon
-ac1 = Image.open('images/aircompp.png')
-res_ac1 = ac1.resize((110,110), Image.ANTIALIAS)
+ac1 = Image.open('airComp.png')
+res_ac1 = ac1.resize((105, 100), Image.ANTIALIAS)
 newac1 = ImageTk.PhotoImage(res_ac1)
-airComp1 = Label(tab1, image=newac1, bg='black')
+airComp1 = Label(root, image=newac1, bg='black')
 
 #Inserting Tank Icon
-gt = Image.open('images/tank.png')
+gt = Image.open('tank.png')
 res_gt = gt.resize((54, 220), Image.ANTIALIAS)
 newgt = ImageTk.PhotoImage(res_gt)
-tank = Label(tab1, image=newgt, bg='black')
+tank = Label(root, image=newgt, bg='black')
 
 #Inserting Start Button Image
-sb = Image.open('images/start.png')
+sb = Image.open('start.png')
 res_sb = sb.resize((167, 70), Image.ANTIALIAS)
 newsb = ImageTk.PhotoImage(res_sb)
 
 #Inserting Stop Button Image
-stopb = Image.open('images/stop.png')
+stopb = Image.open('stop.png')
 res_stopb = stopb.resize((167, 70), Image.ANTIALIAS)
 newstopb = ImageTk.PhotoImage(res_stopb)
 
 #Inserting ON Button Image
-on = Image.open('images/on.png')
+on = Image.open('on.png')
 res_on = on.resize((80, 80), Image.ANTIALIAS)
 onb = ImageTk.PhotoImage(res_on)
 
 #Inserting OFF Button Image
-off = Image.open('images/off.png')
+off = Image.open('off.png')
 res_off = off.resize((80, 80), Image.ANTIALIAS)
 offb = ImageTk.PhotoImage(res_off)
 
-#Inserting discharge Button Image
-db = Image.open('images/discharge.png')
-res_db = db.resize((150, 30), Image.ANTIALIAS)
-newdb = ImageTk.PhotoImage(res_db)
 
 #Inserting clock
-clock1 = Clock(tab1)
+clock1 = Clock(root)
 clock1.configure(bg='black',fg='white',font=("helvetica",16, 'bold'))
 #Adding date
-date = Label(tab1, text=f"{dt.datetime.now():%a, %b %d %Y}",
+date = Label(root, text=f"{dt.datetime.now():%a, %b %d %Y}",
              fg="white", bg="black", font=("helvetica",14))
 
 #START Button
-start_btn = Button(tab1, image=newsb, command=messagebox, 
-                    borderwidth=0, bg='black', activebackground='black')
+start_btn = Button(root, image=newsb, command=messagebox, 
+                    borderwidth=0, bg='black')
 #STOP Button
-stop_btn = Button(tab1, image=newstopb, command=switchoff,
-                    borderwidth=0, bg='black',activebackground='black')
+stop_btn = Button(root, image=newstopb, command=switchoff,
+                    borderwidth=0, bg='black',fg='black')
 
 #ON_LED1 Toggle Button
-led1_btn = Button(tab1, text='ON', image=onb, command=toggle1,
-                    borderwidth=0, bg='black',activebackground='black')
+led1_btn = Button(root, text='ON', image=onb, command=toggle1,
+                    borderwidth=0, bg='black')
 
 #ON_LED2 Toggle Button
-led2_btn = Button(tab1, text='ON', image=onb, command=toggle2,
-                    borderwidth=0, bg='black',activebackground='black')
+led2_btn = Button(root, text='ON', image=onb, command=toggle2,
+                    borderwidth=0, bg='black')
 
 #Inserting progress bar
 percent = StringVar()
-pbar = ttk.Progressbar(tab1, orient=VERTICAL,
+pbar = ttk.Progressbar(root, orient=VERTICAL,
                        length = 220,mode='determinate')
 #Inserting progress bar label
-plabel = Label(tab1, textvariable=percent, font=('Quicksand',10),
+plabel = Label(root, textvariable=percent, font=('Quicksand',10),
                 bg='black', fg='white')
 
 #Inserting timer1 label
-tlabel = Label(tab1, text=' ', font=('Quicksand', 14),
+tlabel = Label(root, text=' ', font=('Quicksand', 14),
                 bg='black', fg='white')
 
 #Inserting timer2 label
-tlabel1 = Label(tab1, text=' ', font=('Quicksand', 14),
+tlabel1 = Label(root, text=' ', font=('Quicksand', 14),
                 bg='black', fg='white' )
 
 #Inserting compressor 1 label
-clabel1 = Label(tab1, text='C1', font=('URW Gothic L', 14, 'bold'),
+clabel1 = Label(root, text='C1', font=('URW Gothic L', 14, 'bold'),
           bg='black', fg='white' )
 
 #Inserting compressor 2 label
-clabel2 = Label(tab1, text='C2', font=('URW Gothic L', 14, 'bold'),
+clabel2 = Label(root, text='C2', font=('URW Gothic L', 14, 'bold'),
           bg='black', fg='white' )
 
-#Inserting button for tabs navigation
-btab2 = Button(tab1, image=newdb, command=select2,
-        borderwidth=0, bg='black',activebackground='black')
 
 #Inserting exit button
-exit_btn = Button(tab1, text="Quit", width=4, height=1,
+exit_btn = Button(root, text="Quit", width=4, height=1,
                   bg="black", fg="white",
                   command=lambda root=root:quit(root))
 
 
-#.................................#
-#..DISPLAYING VARIABLE ON SCREEN..#
-#.................................#
+##DISPLAYING VARIABLE ON SCREEN
+#
+elquator.place(x=30,y=35)
+date.place(x=260,y=75)
+clock1.place(x=410,y=75)
 
-btab2.place(x=635,y=70)
-date.place(x=260,y=70)
-clock1.place(x=425,y=70)
-
-start_btn.place(x=15,y=225)
-stop_btn.place(x=15,y=305)
+start_btn.place(x=15,y=250)
+stop_btn.place(x=15,y=330)
 led1_btn.place(x=680,y=140)
-led2_btn.place(x=680,y=260)
+led2_btn.place(x=680,y=280)
 
-dance.place(x=200,y=105)
-plabel.place(x=580,y=115)
-pbar.place(x=590,y=140)
-tank.place(x=520,y=140)
-airComp.place(x=213,y=117)
-clabel1.place(x=262,y=172) 
-tlabel.place(x=330,y=195)
-airComp1.place(x=213,y=252)
-clabel2.place(x=262,y=307) 
-tlabel1.place(x=330,y=325) 
+dance.place(x=205,y=120)
+plabel.place(x=585,y=130)
+pbar.place(x=595,y=155)
+tank.place(x=525,y=155)
+airComp.place(x=220,y=140)
+clabel1.place(x=267,y=187) 
+tlabel.place(x=330,y=210)
+airComp1.place(x=220,y=275)
+clabel2.place(x=267,y=322) 
+tlabel1.place(x=330,y=340) 
 
-exit_btn.place(x=750,y=360)
-
-#................................................................................#
-##################################################################################
-#                                                                                #
-#                                                                                #
-# # # # # # # # # # # # #    SECOND TAB OF INTERFACE   # # # # # # # # # # # # # #        
-#                                                                                #
-#                                                                                #
-##################################################################################
-#................................................................................#
-
-#Adding background to page
-bg1 = Image.open('images/latestbgrnd2.png')
-bgg1 = ImageTk.PhotoImage(bg1)
-
-labelbg1 = Label(tab2, image=bgg1)
-labelbg1.place(x=0, y=0, relwidth=1, relheight=1)
-
-
-f=0
-g=0
-
-v3 = chan2.voltage
-g_value=((66.7*v3)-0.488)
-
-def read_gauge():
-    def run():
-        global f
-        global g_value
-        while (g_value<100.0):
-            time.sleep(0.2)
-            f+=1
-            if f>100:
-                f=0
-            p1.set_value(int(g_value))
-            print('ADC Voltage 1: ' + str(chan2.voltage) + 'V')
-            root.update_idletasks()
-            #root.after(100,read_gauge)
-            if(g_value==100 or switch==False):
-                break
-    t = threading.Thread(target=run)
-    t.start()
-
-def read_gauge2():
-    global g
-    ga_value=random.randint(0,100)
-    p2.set_value(int(ga_value))
-    g+=1
-    if g>100:
-        g=0
-    root.after(200,read_gauge2)
-
-def start_valve():
-    def run():
-        while switch == True:
-            circles1()
-            time.sleep(0.1)
-            circles2()
-            time.sleep(0.1)
-            if switch == False:
-                break
-    t = threading.Thread(target=run)
-    t.start()
-
-def open_valve():
-    print('Valve is open')
-    global switch
-    switch = True
-    start_valve()
-    read_gauge()
-    read_gauge2()
-
-def close_valve():
-    print('Valve is close')
-    global switch
-    switch = False
-    circles()
-
-#Toggle Switch for Valve
-def toggle_valve():
-    if valve_btn.config('text')[-1] == 'open':
-        valve_btn.config(text='close', image=newcb, bg='black', borderwidth=0,
-                        activebackground='black')
-        print ("pressed true")
-        open_valve()
-    else:
-        valve_btn.config(text='open', image=newob, bg='black', borderwidth=0,
-                        activebackground='black')
-        close_valve()
-
-
-def circles():
-    s1 = rock.create_oval(105,40,115,50,fill='white')
-    s2 = rock.create_oval(120,40,130,50,fill='white')
-    s3 = rock.create_oval(135,40,145,50,fill='white')
-    s4 = rock.create_oval(150,40,160,50,fill='white')
-    s5 = rock.create_oval(165,40,175,50,fill='white')
-    s6 = rock.create_oval(180,40,190,50,fill='white')
-    s7 = rock.create_oval(180,55,190,65,fill='white')
-    s8 = rock.create_oval(180,70,190,80,fill='white')
-    s9 = rock.create_oval(180,85,190,95,fill='white')
-    s10 = rock.create_oval(180,100,190,110,fill='white')
-    s11 = rock.create_oval(180,115,190,125,fill='white')
-    s12 = rock.create_oval(180,130,190,140,fill='white')
-    s13 = rock.create_oval(180,145,190,155,fill='white')
-    s14 = rock.create_oval(180,160,190,170,fill='white')
-    s15 = rock.create_oval(180,175,190,185,fill='white')
-    s16 = rock.create_oval(180,190,190,200,fill='white')
-    s17 = rock.create_oval(195,190,205,200,fill='white')
-    s18 = rock.create_oval(210,190,220,200,fill='white')
-    s19 = rock.create_oval(225,190,235,200,fill='white')
-
-def circles1():
-    s1 = rock.create_oval(105,40,115,50,fill='orange')
-    s2 = rock.create_oval(120,40,130,50,fill='white')
-    s3 = rock.create_oval(135,40,145,50,fill='orange')
-    s4 = rock.create_oval(150,40,160,50,fill='white')
-    s5 = rock.create_oval(165,40,175,50,fill='orange')
-    s6 = rock.create_oval(180,40,190,50,fill='white')
-    s7 = rock.create_oval(180,55,190,65,fill='orange')
-    s8 = rock.create_oval(180,70,190,80,fill='white')
-    s9 = rock.create_oval(180,85,190,95,fill='orange')
-    s10 = rock.create_oval(180,100,190,110,fill='white')
-    s11 = rock.create_oval(180,115,190,125,fill='orange')
-    s12 = rock.create_oval(180,130,190,140,fill='white')
-    s13 = rock.create_oval(180,145,190,155,fill='orange')
-    s14 = rock.create_oval(180,160,190,170,fill='white')
-    s15 = rock.create_oval(180,175,190,185,fill='orange')
-    s16 = rock.create_oval(180,190,190,200,fill='white')
-    s17 = rock.create_oval(195,190,205,200,fill='orange')
-    s18 = rock.create_oval(210,190,220,200,fill='white')
-    s19 = rock.create_oval(225,190,235,200,fill='orange')
-
-def circles2():
-    s1 = rock.create_oval(105,40,115,50,fill='white')
-    s2 = rock.create_oval(120,40,130,50,fill='orange')
-    s3 = rock.create_oval(135,40,145,50,fill='white')
-    s4 = rock.create_oval(150,40,160,50,fill='orange')
-    s5 = rock.create_oval(165,40,175,50,fill='white')
-    s6 = rock.create_oval(180,40,190,50,fill='orange')
-    s7 = rock.create_oval(180,55,190,65,fill='white')
-    s8 = rock.create_oval(180,70,190,80,fill='orange')
-    s9 = rock.create_oval(180,85,190,95,fill='white')
-    s10 = rock.create_oval(180,100,190,110,fill='orange')
-    s11 = rock.create_oval(180,115,190,125,fill='white')
-    s12 = rock.create_oval(180,130,190,140,fill='orange')
-    s13 = rock.create_oval(180,145,190,155,fill='white')
-    s14 = rock.create_oval(180,160,190,170,fill='orange')
-    s15 = rock.create_oval(180,175,190,185,fill='white')
-    s16 = rock.create_oval(180,190,190,200,fill='orange')
-    s17 = rock.create_oval(195,190,205,200,fill='white')
-    s18 = rock.create_oval(210,190,220,200,fill='orange')
-    s19 = rock.create_oval(225,190,235,200,fill='white')
-
-
-#########################################################
-#                                                       #
-#                    ADDING WIDGETS                     #
-#                                                       #
-#########################################################
-#
-
-#Inserting clock
-clock2 = Clock(tab2)
-clock2.configure(bg='black',fg='white',font=("Quicksand",16, 'bold'))
-#Adding date
-date2 = Label(tab2, text=f"{dt.datetime.now():%a, %b %d %Y}",
-             fg="white", bg="black", font=("helvetica",14))
-
-#Inserting frame for animation
-rock = Canvas(tab2, bg='black',width=400,height=265)
-circles()
-
-#Inserting Tank Image
-gt2 = Image.open('images/tank2.png')
-res_gt2 = gt2.resize((54, 220), Image.ANTIALIAS)
-newgt2 = ImageTk.PhotoImage(res_gt2)
-tank2 = Label(tab2, image=newgt2, bg='black')
-
-#Inserting Generator Image
-gn = Image.open('images/generator.png')
-res_gn = gn.resize((150, 150), Image.ANTIALIAS)
-newgn = ImageTk.PhotoImage(res_gn)
-generator = Label(tab2, image=newgn, bg='black')
-
-#Inserting open Button Image
-ob = Image.open('images/open.png')
-res_ob = ob.resize((100, 100), Image.ANTIALIAS)
-newob = ImageTk.PhotoImage(res_ob)
-
-#Inserting close Button Image
-cb = Image.open('images/close.png')
-res_cb = cb.resize((100, 100), Image.ANTIALIAS)
-newcb = ImageTk.PhotoImage(res_cb)
-
-#Inserting discharge Button Image
-rb = Image.open('images/refill.png')
-res_rb = rb.resize((150, 30), Image.ANTIALIAS)
-newrb = ImageTk.PhotoImage(res_rb)
-
-#Inserting gauge widget
-p1 = gaugelib.DrawGauge2(tab2, max_value=300.0, min_value=0.0,
-                        size=140, bg_col='black',
-                        unit="psi", bg_sel=2)
-#Inserting gauge widget
-p2 = gaugelib.DrawGauge2(tab2, max_value=100.0, min_value=0.0,
-                        size=140, bg_col='black',
-                        unit="psi", bg_sel=2)
-
-btab1 = Button(tab2, image=newrb, command=select1,
-                borderwidth=0, bg='black',activebackground='black')
-
-#ON_LED1 Toggle Button
-valve_btn = Button(tab2, text='open', image=newob, command=toggle_valve,
-                    bg='black', borderwidth=0, activebackground='black')
-
-
-##....DISPLAYING VARIABLE ON SCREEN.....##
-#
-rock.place(x=380,y=110)
-btab1.place(x=635,y=70)
-date2.place(x=260,y=70)
-clock2.place(x=425,y=70)
-tank2.place(x=427, y=137)
-generator.place(x=620,y=217)
-valve_btn.place(x=25,y=200)
-
-p1.place(x=230,y=250)
-p2.place(x=230,y=110)
-
+exit_btn.place(x=680,y=385)
 
 root.mainloop()

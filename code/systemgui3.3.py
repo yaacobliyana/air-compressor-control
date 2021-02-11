@@ -517,7 +517,7 @@ def circlez_2b():
 #########################################################
 #
 #Inserting frame for animation
-dance = Canvas(root, bg='black',width=425,height=265)
+dance = Canvas(tab1, bg='black',width=425,height=265)
 #Draw many many circles (put in a function)
 circlez()
 
@@ -525,19 +525,19 @@ circlez()
 ac = Image.open('images/aircompp.png')
 res_ac = ac.resize((110, 110), Image.ANTIALIAS)
 newac = ImageTk.PhotoImage(res_ac)
-airComp = Label(root, image=newac, bg='black')
+airComp = Label(tab1, image=newac, bg='black')
 
 #Inserting second Compressor Icon
 ac1 = Image.open('images/aircompp.png')
 res_ac1 = ac1.resize((110,110), Image.ANTIALIAS)
 newac1 = ImageTk.PhotoImage(res_ac1)
-airComp1 = Label(root, image=newac1, bg='black')
+airComp1 = Label(tab1, image=newac1, bg='black')
 
 #Inserting Tank Icon
 gt = Image.open('images/tank.png')
 res_gt = gt.resize((54, 220), Image.ANTIALIAS)
 newgt = ImageTk.PhotoImage(res_gt)
-tank = Label(root, image=newgt, bg='black')
+tank = Label(tab1, image=newgt, bg='black')
 
 #Inserting Start Button Image
 sb = Image.open('images/start.png')
@@ -559,6 +559,10 @@ off = Image.open('images/off.png')
 res_off = off.resize((80, 80), Image.ANTIALIAS)
 offb = ImageTk.PhotoImage(res_off)
 
+#Inserting discharge Button Image
+db = Image.open('images/discharge.png')
+res_db = db.resize((150, 30), Image.ANTIALIAS)
+newdb = ImageTk.PhotoImage(res_db)
 
 #Inserting clock
 clock1 = Clock(tab1)
