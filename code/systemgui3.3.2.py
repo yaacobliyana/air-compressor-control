@@ -658,10 +658,10 @@ g=0
 
 def read_gauge():
     def run():
-        v3 = chan2.voltage
         while (switch == True):
-            time.sleep(0.5)
-            g_value = (90.9*v3)-0.5143
+            #time.sleep(0.1)
+            v3 = chan2.voltage
+            g_value = (60*v3)-0.5143
             p1.set_value(int(g_value))
             print('ADC Voltage 1: ' + str(chan2.voltage) + 'V')
             print('Pressure: ' + str(int(g_value)) + 'bar')
