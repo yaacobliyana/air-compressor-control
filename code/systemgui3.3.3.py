@@ -653,6 +653,8 @@ labelbg1 = Label(tab2, image=bgg1)
 labelbg1.place(x=0, y=0, relwidth=1, relheight=1)
 
 svalve = 25
+GPIO.setup(svalve,GPIO.OUT)
+
 
 f=0
 g=0

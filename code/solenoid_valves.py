@@ -133,7 +133,7 @@ start_btn = Button(root, text="START", width=8, height=2,
 
 p1.place(x=230,y=250)
 p2.place(x=230,y=110)
-start_btn.place(x=250, y=50)
+start_btn.place(x=240, y=30)
 
 root.mainloop()
 
