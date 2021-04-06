@@ -25,6 +25,8 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(relay_pins, GPIO.OUT)
 
 switch = True
+p1_value = 0
+p2_value = 0
 
 root = Tk()
 root.geometry("800x420")
@@ -39,8 +41,8 @@ def read_gauge():
         while (switch == True):
             #time.sleep(0.1)
             v1 = chan0.voltage
-            p1_value = (60*v3)-0.5143
-            p1.set_value(int(g_value))
+            p1_value = (60*v1)-0.5143
+            p1.set_value(int(p1_value))
             print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
             print('Pressure: ' + str(int(p1_value)) + 'bar')
             root.update_idletasks()
@@ -58,10 +60,10 @@ def read_gauge2():
         while (switch == True):
             #time.sleep(0.1)
             v2 = chan1.voltage
-            p2_value = (60*v3)-0.5143
-            p2.set_value(int(g_value))
+            p2_value = (60*v2)-0.5143
+            p2.set_value(int(p2_value))
             print('ADC Voltage 1: ' + str(chan1.voltage) + 'V')
-            print('Pressure: ' + str(int(p1_value)) + 'bar')
+            print('Pressure: ' + str(int(p2_value)) + 'bar')
             root.update_idletasks()
             #root.after(100,read_gauge)
             if(switch==False):
@@ -69,48 +71,47 @@ def read_gauge2():
     t = threading.Thread(target=run)
     t.start()
 
-
+def closeAll():
+    GPIO.output(13, True)
+    GPIO.output(19, True)
+    GPIO.output(26, True)
+    GPIO.output(16, True)
+    print('Close all valves')
+    
 #Start the Program for first sequence
 def start1():
-	if p1_value > 45:
+    read_gauge()
+    while (p1_value <= 150) and (p1_value >= 50):
+        read_gauge()
         GPIO.output(13, False)
         GPIO.output(19, False)
         GPIO.output(26, True)
         GPIO.output(16, True)
-		print('open valve 1 & 2')
-		print('close valve 3 & 4')
-	else if p1_value < 25:
-        GPIO.output(13, True)
-        GPIO.output(19, True)
-        GPIO.output(26, True)
-        GPIO.output(16, True)
-		print('Close all valves')
-	else:
-		start1()
+        print('open valve 1 & 2')
+        print('close valve 3 & 4')
+        if p1_value < 50:
+            if not closeAll():
+                break
 
 #Start the Program for second sequence
 def start2():
-	if p2_value > 45:
-		print('open valve 3 & 4')
-		print('close valve 1 & 2')
+    read_gauge2()
+    while (p2_value <= 150) and (p2_value >= 50):
+        read_gauge2()
         GPIO.output(13, True)
         GPIO.output(19, True)
         GPIO.output(26, False)
         GPIO.output(16, False)
-	else if p2_value < 25:
-		print('Close all valves')
-        GPIO.output(13, True)
-        GPIO.output(19, True)
-        GPIO.output(26, True)
-        GPIO.output(16, True)
-	else:
-		start2()
+        print('open valve 3 & 4')
+        print('close valve 1 & 2')
+        if p2_value <= 50:
+            if not closeAll():
+                break
 
 def start():
     while switch == True:
         start1()
-        start2()
-        if p1_value < 25 && p2_value < 25:
+        if switch == False:
             break
 
 ####------ ADDING WIDGETS ------####
