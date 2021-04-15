@@ -658,6 +658,7 @@ g=0
 
 def read_gauge():
     def run():
+        global switch
         while (switch == True):
             #time.sleep(0.1)
             v3 = chan2.voltage
