@@ -35,40 +35,31 @@ root.configure(bg='black')
 
 #Read Pressure Sensor 1
 def read_gauge():
-    def run():
-        global switch
-        global p1_value
-        while (switch == True):
-            #time.sleep(0.1)
-            v1 = chan0.voltage
-            p1_value = (60*v1)-0.5143
-            p1.set_value(int(p1_value))
-            print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
-            print('Pressure: ' + str(int(p1_value)) + 'bar')
-            root.update_idletasks()
-            #root.after(100,read_gauge)
-            if(switch==False):
-                break
-    t = threading.Thread(target=run)
-    t.start()
+    global switch
+    global p1_value
+    #time.sleep(0.1)
+    v1 = chan0.voltage
+    p1_value = (60*v1)-0.5143
+    p1.set_value(int(p1_value))
+    print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
+    print('Pressure: ' + str(int(p1_value)) + 'bar')
+    root.update_idletasks()
+    #root.after(100,read_gauge)
+
 
 #Read Pressure Sensor 2
 def read_gauge2():
-    def run():
-        global switch
-        global p2_value
-        #time.sleep(0.1)
-        v2 = chan1.voltage
-            p2_value = (60*v2)-0.5143
-            p2.set_value(int(p2_value))
-            print('ADC Voltage 1: ' + str(chan1.voltage) + 'V')
-            print('Pressure: ' + str(int(p2_value)) + 'bar')
-            root.update_idletasks()
-            #root.after(100,read_gauge)
-            if(switch==False):
-                break
-    t = threading.Thread(target=run)
-    t.start()
+    global switch
+    global p2_value
+    #time.sleep(0.1)
+    v2 = chan1.voltage
+    p2_value = (60*v2)-0.5143
+    p2.set_value(int(p2_value))
+    print('ADC Voltage 1: ' + str(chan1.voltage) + 'V')
+    print('Pressure: ' + str(int(p2_value)) + 'bar')
+    root.update_idletasks()
+    #root.after(100,read_gauge)
+        
 
 def closeAll():
     GPIO.output(13, True)
