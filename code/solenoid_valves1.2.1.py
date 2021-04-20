@@ -70,17 +70,16 @@ def closeAll():
 #Start the Program for first sequence
 def start1():
     read_gauge()
-    while (p1_value <= 150) and (p1_value >= 50):
+    if (p1_value <= 150) and (p1_value >= 50):
         read_gauge()
-        GPIO.output(13, True)
-        GPIO.output(19, True)
-        GPIO.output(26, False)
-        GPIO.output(16, False)
-        print('open valve 3 & 4')
-        print('close valve 1 & 2')
-        if p1_value <= 50:
-            if not closeAll():
-                break
+        GPIO.output(13, False)
+        GPIO.output(19, False)
+        GPIO.output(26, True)
+        GPIO.output(16, True)
+        print('open valve 1 & 2')
+        print('close valve 3 & 4')
+    if (p1_value < 50):
+        closeAll()
 
 #Start the Program for second sequence
 def start2():
@@ -104,8 +103,12 @@ def start():
         start1()
         #start2()
         if switch == False:
-                break
-    
+            break
+
+def threadd():
+    t = threading.Thread(target=start)
+    t.start()
+
 def stop():
     print('System exited')
     global switch
@@ -126,7 +129,7 @@ p2 = gaugelib.DrawGauge2(root, max_value=300.0, min_value=0.0,
 start_btn = Button(root, text="START", width=8, height=2, 
                    bg="#4EA20E", fg="black",
                    font=('URW Gothic L', 16, 'bold'),
-                   activebackground='#428C09', command=start)
+                   activebackground='#428C09', command=threadd)
 
 stop_btn = Button(root, text="STOP", width=8, height=2, 
                    bg="#D9290B", fg="black",

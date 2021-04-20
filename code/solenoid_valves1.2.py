@@ -70,17 +70,16 @@ def closeAll():
 #Start the Program for first sequence
 def start1():
     read_gauge()
-    while (p1_value <= 150) and (p1_value >= 50):
+    if (p1_value <= 150) and (p1_value >= 50):
         read_gauge()
-        GPIO.output(13, True)
-        GPIO.output(19, True)
-        GPIO.output(26, False)
-        GPIO.output(16, False)
-        print('open valve 3 & 4')
-        print('close valve 1 & 2')
-        if p1_value <= 50:
-            if not closeAll():
-                break
+        GPIO.output(13, False)
+        GPIO.output(19, False)
+        GPIO.output(26, True)
+        GPIO.output(16, True)
+        print('open valve 1 & 2')
+        print('close valve 3 & 4')
+    if (p1_value < 50):
+        closeAll()
 
 #Start the Program for second sequence
 def start2():
@@ -98,13 +97,16 @@ def start2():
                 break
 
 def start():
-    global switch
-    switch = True
-    while switch == True:
-        start1()
-        #start2()
-        if switch == False:
+    def run():
+        global switch
+        switch = True
+        while switch == True:
+            start1()
+            #start2()
+            if switch == False:
                 break
+    t = threading.Thread(target=run)
+    t.start()
     
 def stop():
     print('System exited')
