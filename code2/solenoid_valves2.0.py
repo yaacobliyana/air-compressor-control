@@ -98,6 +98,17 @@ def start2():
         if p2_value <= 50:
             if not closeAll():
                 break
+            
+def arrow_path1():
+    while switch == True:
+        arroway11()
+        arroway21()
+        time.sleep(0.1)
+        arroway12()
+        arroway22()
+        time.sleep(0.1)
+        if switch == False:
+            break      
 
 def arrow_path1():
     while switch == True:
@@ -129,6 +140,8 @@ def stop():
     global switch
     switch = False
     closeAll()
+    arroway10()
+    arroway20()
 
 ####------ ADDING WIDGETS ------####
 
@@ -275,8 +288,8 @@ path.place(x=100,y=90)
 tank.place(x=570,y=137)
 tank2.place(x=180,y=137)
 
-p1.place(x=320,y=250)
-p2.place(x=320,y=110)
+p1.place(x=30,y=110)
+p2.place(x=650,y=110)
 start_btn.place(x=240, y=30)
 stop_btn.place(x=400,y=30)
 
