@@ -83,7 +83,6 @@ def valve_path2():
 	t = threading.Thread(target=run)
 	t.start()
 
-
 def turbineSpin():
 	global blink
 	blink = True
@@ -306,13 +305,13 @@ arroway10()
 arroway20()
 
 #Inserting Start Button Image
-sb = Image.open('images/startbtn.png')
-res_sb = sb.resize((125, 83), Image.ANTIALIAS)
+sb = Image.open('images/start2.png')
+res_sb = sb.resize((150, 51), Image.ANTIALIAS)
 newsb = ImageTk.PhotoImage(res_sb)
 
 #Inserting Stop Button Image
-stb = Image.open('images/stop.png')
-res_stb = stb.resize((125, 83), Image.ANTIALIAS)
+stb = Image.open('images/stop2.png')
+res_stb = stb.resize((150, 51), Image.ANTIALIAS)
 newstb = ImageTk.PhotoImage(res_stb)
 
 #Inserting gauge widget
@@ -334,8 +333,8 @@ stop_btn = Button(root, image=newstb, command=stop,
 path.place(x=100,y=90)
 p1.place(x=25,y=140)
 p2.place(x=650,y=140)
-start_btn.place(x=25, y=310)
-stop_btn.place(x=650,y=310)
+start_btn.place(x=250, y=340)
+stop_btn.place(x=410,y=340)
 
 tank.place(x=575,y=137)
 tank2.place(x=175,y=137)
