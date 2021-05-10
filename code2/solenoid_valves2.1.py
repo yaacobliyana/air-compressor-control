@@ -27,7 +27,6 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(relay_pins, GPIO.OUT)
 
-switch = True
 p1_value = 0
 p2_value = 0
 
@@ -81,9 +80,7 @@ def closeAll():
     
 #Start the Program for first sequence
 def start1():
-    read_gauge()
     if (p1_value <= 150) and (p1_value >= 50):
-        read_gauge()
         GPIO.output(13, False)
         GPIO.output(19, False)
         GPIO.output(26, True)
@@ -147,16 +144,18 @@ def valve_path2():
             
 
 def turbineSpin():
-    global blink
-    blink = True
-    while blink == True:
-        placeTurbine1()
-        time.sleep(0.1)
-        placeTurbine2()
-        time.sleep(0.1)
-        if blink == False:
-            break
-
+    def run():
+        global blink
+        blink = True
+        while blink == True:
+            placeTurbine1()
+            time.sleep(0.1)
+            placeTurbine2()
+            time.sleep(0.1)
+            if blink == False:
+                break
+    t=threading.Thread(target=run)
+    t.start()
 
 def start():
     def run():
