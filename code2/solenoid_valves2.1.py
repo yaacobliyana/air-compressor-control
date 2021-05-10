@@ -43,7 +43,6 @@ labelbg.place(x=0, y=0, relwidth=1, relheight=1)
 
 #Read Pressure Sensor 1
 def read_gauge():
-    global switch
     global p1_value
     #time.sleep(0.1)
     v1 = chan0.voltage
@@ -57,11 +56,10 @@ def read_gauge():
 
 #Read Pressure Sensor 2
 def read_gauge2():
-    global switch
     global p2_value
     #time.sleep(0.1)
     v2 = chan1.voltage
-    p2_value = (78*(v1-0.4787))
+    p2_value = (78*(v2-0.4787))
     p2.set_value(int(p2_value))
     print('ADC Voltage 1: ' + str(chan1.voltage) + 'V')
     print('Pressure: ' + str(int(p2_value)) + 'bar')
@@ -121,24 +119,28 @@ def start2():
 
 def valve_path1():
     def run():
-        while switch == True:
+        global blink1
+        blink1 = True
+        while blink1 == True:
             arroway11()
             time.sleep(0.25)
             arroway12()
             time.sleep(0.25)
-            if switch == False:
+            if blink1 == False:
                 break
     t = threading.Thread(target=run)
     t.start()
 
 def valve_path2():
     def run():
-        while switch == True:
+        global blink2
+        blink2 = True
+        while blink2 == True:
             arroway21()
             time.sleep(0.25)
             arroway22()
             time.sleep(0.25)
-            if switch == False:
+            if blink2 == False:
                 break
     t = threading.Thread(target=run)
     t.start()
@@ -161,8 +163,9 @@ def start():
         global switch
         switch = True
         while switch == True:
+            read_gauge()
             start1()
-            start2()
+            #start2()
             if switch == False:
                 if not closeAll():
                     break
@@ -173,8 +176,12 @@ def stop():
     print('System exited')
     global switch
     global blink
+    global blink1
+    global blink2
     switch = False
     blink = False
+    blink1 = False
+    blink2 = False
     closeAll()
 
 ####------ ADDING WIDGETS ------####
@@ -374,28 +381,25 @@ newstb = ImageTk.PhotoImage(res_stb)
 #Inserting gauge widget
 p1 = gaugelib.DrawGauge2(root, max_value=300.0, min_value=0.0,
                         size=140, bg_col='black',
-                        unit="psi", bg_sel=2)
+                        unit="bar", bg_sel=2)
 #Inserting gauge widget
 p2 = gaugelib.DrawGauge2(root, max_value=300.0, min_value=0.0,
                         size=140, bg_col='black',
-                        unit="psi", bg_sel=2)
+                        unit="bar", bg_sel=2)
 
-start_btn = Button(root, text="START", width=8, height=2, 
-                   bg="#4EA20E", fg="black",
-                   font=('URW Gothic L', 16, 'bold'),
-                   activebackground='#428C09', command=start)
+#START Button
+start_btn = Button(root, image=newsb, command=start, 
+                    borderwidth=0, bg='black',activebackground='black')
 
-stop_btn = Button(root, text="STOP", width=8, height=2, 
-                   bg="#D9290B", fg="black",
-                   font=('URW Gothic L', 16, 'bold'),
-                   activebackground='#AE220B', command=stop)
+stop_btn = Button(root, image=newstb, command=stop, 
+                    borderwidth=0, bg='black',activebackground='black')
 
 path.place(x=100,y=90)
 tank.place(x=570,y=137)
 tank2.place(x=180,y=137)
 
-p1.place(x=320,y=250)
-p2.place(x=320,y=110)
+p1.place(x=25,y=140)
+p2.place(x=650,y=140)
 start_btn.place(x=250, y=340)
 stop_btn.place(x=410,y=340)
 
