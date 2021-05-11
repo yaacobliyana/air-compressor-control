@@ -64,7 +64,8 @@ def read_gauge():
             root.update_idletasks()
             #root.after(100,read_gauge)
             if switch == False:
-                break
+                if not stop()
+                    break
     t = threading.Thread(target=run)
     t.start()
 
