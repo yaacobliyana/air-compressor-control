@@ -46,6 +46,7 @@ def start():
     switch = True
     read_gauge()
     start1()
+    startAni1()
     #start2()
 
 #Read Pressure Sensor 1
@@ -62,9 +63,10 @@ def read_gauge():
             #print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
             print('Pressure: ' + str(int(p1_value)) + 'bar')
             root.update_idletasks()
+            start1()
             #root.after(100,read_gauge)
             if switch == False:
-                if not stop()
+                if not stop():
                     break
     t = threading.Thread(target=run)
     t.start()
@@ -156,13 +158,19 @@ def start1():
         GPIO.output(19, False)
         GPIO.output(26, True)
         GPIO.output(16, True)
+        print('open valve 1 & 2')
+        print('close valve 3 & 4')
+    elif (p1_value < 50):
+        stop()
+#         start2()
+
+def startAni1():
+    if (p1_value <= 150) and (p1_value >= 50):
         placeVon1_on()
         placeVof1_off()
         valve_path1()
         turbineSpin()
-        print('open valve 1 & 2')
-        print('close valve 3 & 4')
-    if (p1_value < 50):
+    elif (p1_value < 50):
         stop()
 #         start2()
 
