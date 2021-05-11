@@ -42,12 +42,11 @@ labelbg = Label(root, image=bgg)
 labelbg.place(x=0, y=0, relwidth=1, relheight=1)
 
 def start():
-    def runn():
-        global switch
-        switch = True
-        read_gauge()
-        start1()
-        #start2()
+    global switch
+    switch = True
+    read_gauge()
+    start1()
+    #start2()
 
 #Read Pressure Sensor 1
 def read_gauge():
@@ -61,7 +60,7 @@ def read_gauge():
             p1_value = (78*(v1-0.4787))
             p1.set_value(int(p1_value))
             #print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
-            #print('Pressure: ' + str(int(p1_value)) + 'bar')
+            print('Pressure: ' + str(int(p1_value)) + 'bar')
             root.update_idletasks()
             #root.after(100,read_gauge)
             if switch == False:
@@ -163,8 +162,8 @@ def start1():
         print('open valve 1 & 2')
         print('close valve 3 & 4')
     if (p1_value < 50):
-        closeAll()
-        start2()
+        stop()
+#         start2()
 
 #Start the Program for second sequence
 def start2():
