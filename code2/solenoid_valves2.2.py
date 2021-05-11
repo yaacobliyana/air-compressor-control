@@ -27,6 +27,7 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(relay_pins, GPIO.OUT)
 
+switch = True
 p1_value = 0
 p2_value = 0
 
@@ -45,6 +46,7 @@ def start():
         global switch
         switch = True
         read_gauge()
+        start1()
         #start2()
 
 #Read Pressure Sensor 1
@@ -61,7 +63,6 @@ def read_gauge():
             #print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
             #print('Pressure: ' + str(int(p1_value)) + 'bar')
             root.update_idletasks()
-            start1()
             #root.after(100,read_gauge)
             if switch == False:
                 break
