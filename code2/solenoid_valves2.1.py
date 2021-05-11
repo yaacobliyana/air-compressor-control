@@ -40,6 +40,88 @@ bgg = ImageTk.PhotoImage(bg)
 labelbg = Label(root, image=bgg)
 labelbg.place(x=0, y=0, relwidth=1, relheight=1)
 
+def start():
+    def runn():
+        global switch
+        switch = True
+        while switch == True:
+            read_gauge()
+            start1()
+            #start2()
+            if switch == False:
+                if not closeAll():
+                    break
+    ts = threading.Thread(target=runn)
+    ts.start()
+    
+def stop():
+    print('System exited')
+    global switch
+    global blink
+    global blink1
+    global blink2
+    switch = False
+    blink = False
+    blink1 = False
+    blink2 = False
+    closeAll()
+
+def closeAll():
+    GPIO.output(13, True)
+    GPIO.output(19, True)
+    GPIO.output(26, True)
+    GPIO.output(16, True)
+    print('Close all valves')
+    placeVof1_on()
+    placeVof2_on()
+    placeVon1_off()
+    placeVon2_off()
+    arroway10()
+    arroway20()
+
+def valve_path1():
+    def run1():
+        global blink1
+        blink1 = True
+        while blink1 == True:
+            arroway11()
+            time.sleep(0.25)
+            arroway12()
+            time.sleep(0.25)
+            if blink1 == False:
+                break
+    t1 = threading.Thread(target=run1)
+    t1.start()
+
+def valve_path2():
+    def run2():
+        global blink2
+        blink2 = True
+        while blink2 == True:
+            arroway21()
+            time.sleep(0.25)
+            arroway22()
+            time.sleep(0.25)
+            if blink2 == False:
+                break
+    t2 = threading.Thread(target=run2)
+    t2.start()
+
+def turbineSpin():
+    def run3():
+        global blink
+        blink = True
+        while blink == True:
+            placeTurbine1()
+            time.sleep(0.1)
+            placeTurbine2()
+            time.sleep(0.1)
+            if blink == False:
+                break
+    t3=threading.Thread(target=run3)
+    t3.start()
+
+
 #Read Pressure Sensor 1
 def read_gauge():
     global p1_value
@@ -47,8 +129,8 @@ def read_gauge():
     v1 = chan0.voltage
     p1_value = (78*(v1-0.4787))
     p1.set_value(int(p1_value))
-    print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
-    print('Pressure: ' + str(int(p1_value)) + 'bar')
+    #print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
+    #print('Pressure: ' + str(int(p1_value)) + 'bar')
     root.update_idletasks()
     #root.after(100,read_gauge)
 
@@ -64,19 +146,6 @@ def read_gauge2():
     print('Pressure: ' + str(int(p2_value)) + 'bar')
     root.update_idletasks()
     #root.after(100,read_gauge)
-
-def closeAll():
-    GPIO.output(13, True)
-    GPIO.output(19, True)
-    GPIO.output(26, True)
-    GPIO.output(16, True)
-    print('Close all valves')
-    placeVof1_on()
-    placeVof2_on()
-    placeVon1_off()
-    placeVon2_off()
-    arroway10()
-    arroway20()
     
 #Start the Program for first sequence
 def start1():
@@ -113,76 +182,8 @@ def start2():
     if (p2_value <= 50):
         closeAll()
         start1()
-
-def valve_path1():
-    def run():
-        global blink1
-        blink1 = True
-        while blink1 == True:
-            arroway11()
-            time.sleep(0.25)
-            arroway12()
-            time.sleep(0.25)
-            if blink1 == False:
-                break
-    t = threading.Thread(target=run)
-    t.start()
-
-def valve_path2():
-    def run():
-        global blink2
-        blink2 = True
-        while blink2 == True:
-            arroway21()
-            time.sleep(0.25)
-            arroway22()
-            time.sleep(0.25)
-            if blink2 == False:
-                break
-    t = threading.Thread(target=run)
-    t.start()
-            
-
-def turbineSpin():
-    def run():
-        global blink
-        blink = True
-        while blink == True:
-            placeTurbine1()
-            time.sleep(0.1)
-            placeTurbine2()
-            time.sleep(0.1)
-            if blink == False:
-                break
-    t=threading.Thread(target=run)
-    t.start()
-
-def start():
-    def run():
-        global switch
-        switch = True
-        while switch == True:
-            read_gauge()
-            start1()
-            #start2()
-            if switch == False:
-                if not closeAll():
-                    break
-    t = threading.Thread(target=run)
-    t.start()
     
-def stop():
-    print('System exited')
-    global switch
-    global blink
-    global blink1
-    global blink2
-    switch = False
-    blink = False
-    blink1 = False
-    blink2 = False
-    closeAll()
-
+    
 ####------ ADDING WIDGETS ------####
 
 #Inserting frame for animation
