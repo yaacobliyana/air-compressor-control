@@ -45,7 +45,6 @@ def start():
     global switch
     switch = True
     read_gauge()
-    start1()
     startAni1()
     #start2()
 
