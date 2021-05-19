@@ -110,12 +110,7 @@ def start1():
             print('open valve 1 & 2')
             print('close valve 3 & 4')
         elif (p1_value < 50):
-            GPIO.output(13, True)
-            GPIO.output(19, True)
-            GPIO.output(26, False)
-            GPIO.output(16, False)
-            print('open valve 3 & 4')
-            print('close valve 1 & 2')
+            stop()
     if (p1_value < 50):
         if (p2_value <= 150) and (p2_value >= 50):
             GPIO.output(13, True)
@@ -125,12 +120,7 @@ def start1():
             print('open valve 3 & 4')
             print('close valve 1 & 2')
         elif (p2_value < 50):
-            GPIO.output(13, False)
-            GPIO.output(19, False)
-            GPIO.output(26, True)
-            GPIO.output(16, True)
-            print('open valve 1 & 2')
-            print('close valve 3 & 4')
+            stop()
 
 #         start2()
 
@@ -142,10 +132,7 @@ def start2():
             valve_path1()
             turbineSpin()
         elif (p1_value < 50):
-            placeVon2_on()
-            placeVof2_off()
-            valve_path2()
-            turbineSpin()
+            stop()
     if (p2_value <= 150) and (p2_value >= 50):
         if (p1_value < 50):
             placeVon2_on()
@@ -153,10 +140,7 @@ def start2():
             valve_path2()
             turbineSpin()
         elif (p1_value <= 150) and (p1_value >= 50):
-            placeVon1_on()
-            placeVof1_off()
-            valve_path1()
-            turbineSpin()
+            stop()
 
 def startAni1():
     if (p1_value <= 150) and (p1_value >= 50):
