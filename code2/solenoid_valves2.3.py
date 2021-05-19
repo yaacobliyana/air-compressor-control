@@ -44,10 +44,10 @@ labelbg.place(x=0, y=0, relwidth=1, relheight=1)
 def start():
     global switch
     switch = True
-#     read_gauge()
-#     startAni1()
-    read_gauge2()
-    startAni2()
+    read_gauge()
+    startAni1()
+#     read_gauge2()
+#     startAni2()
     #start2()
 
 #Read Pressure Sensor 1
@@ -172,8 +172,8 @@ def start1():
         print('open valve 1 & 2')
         print('close valve 3 & 4')
     elif (p1_value < 50):
-        stop()
-        start2()
+        switch = False
+#         start2()
 
 def startAni1():
     if (p1_value <= 150) and (p1_value >= 50):
@@ -183,7 +183,7 @@ def startAni1():
         turbineSpin()
     elif (p1_value < 50):
         stop()
-        startAni2()
+#         startAni2()
 
 #Start the Program for second sequence
 def start2():
@@ -207,12 +207,9 @@ def startAni2():
         turbineSpin()
     elif (p2_value <= 50):
         stop()
-<<<<<<< HEAD
 #         startAni1()
-=======
-        #startAni1()
->>>>>>> 527b79d79d503e4066ed05257234ea28b07ab07c
-    
+
+
 ####------ ADDING WIDGETS ------####
 
 #Inserting frame for animation
