@@ -44,8 +44,10 @@ labelbg.place(x=0, y=0, relwidth=1, relheight=1)
 def start():
     global switch
     switch = True
-    read_gauge()
-    startAni1()
+#     read_gauge()
+#     startAni1()
+    read_gauge2()
+    startAni2()
     #start2()
 
 #Read Pressure Sensor 1
@@ -70,17 +72,27 @@ def read_gauge():
     t = threading.Thread(target=run)
     t.start()
 
-#Read Pressure Sensor 2
+#Read Pressure Sensor 1
 def read_gauge2():
-    global p2_value
-    #time.sleep(0.1)
-    v2 = chan1.voltage
-    p2_value = (78*(v2-0.4787))
-    p2.set_value(int(p2_value))
-    print('ADC Voltage 1: ' + str(chan1.voltage) + 'V')
-    print('Pressure: ' + str(int(p2_value)) + 'bar')
-    root.update_idletasks()
-    #root.after(100,read_gauge)
+    def run():
+        global p2_value
+        global switch
+        switch = True
+        while switch == True:
+            #time.sleep(0.1)
+            v2 = chan1.voltage
+            p2_value = (78*(v2-0.4787))
+            p2.set_value(int(p2_value))
+            #print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
+            print('Pressure: ' + str(int(p2_value)) + 'bar')
+            root.update_idletasks()
+            start2()
+            #root.after(100,read_gauge)
+            if switch == False:
+                if not stop():
+                    break
+    t = threading.Thread(target=run)
+    t.start()
     
 def stop():
     print('System exited')
@@ -161,7 +173,7 @@ def start1():
         print('close valve 3 & 4')
     elif (p1_value < 50):
         stop()
-#         start2()
+        start2()
 
 def startAni1():
     if (p1_value <= 150) and (p1_value >= 50):
@@ -171,7 +183,7 @@ def startAni1():
         turbineSpin()
     elif (p1_value < 50):
         stop()
-#         start2()
+        startAni2()
 
 #Start the Program for second sequence
 def start2():
@@ -184,10 +196,10 @@ def start2():
         print('close valve 1 & 2')
     elif (p2_value <= 50):
         stop()
-        #start1()
+#         start1()
 
     #Start the Program for second sequence
-def start2():
+def startAni2():
     if (p2_value <= 150) and (p2_value >= 50):
         placeVon2_on()
         placeVof2_off()
@@ -195,7 +207,7 @@ def start2():
         turbineSpin()
     elif (p2_value <= 50):
         stop()
-        #start1()
+#         startAni1()
     
 ####------ ADDING WIDGETS ------####
 
