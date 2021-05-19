@@ -52,52 +52,20 @@ def start():
 
 #Read Pressure Sensor 1
 def read_gauge():
-    def run():
-        global p1_value
-        global p2_value
-        global switch
-        switch = True
-        while switch == True:
-            #time.sleep(0.1)
-            v1 = chan0.voltage
-            v2 = chan1.voltage
-            p1_value = (78*(v1-0.4787))
-            p2_value = (78*(v2-0.4787))
-            p1.set_value(int(p1_value))
-            p2.set_value(int(p2_value))
-            #print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
-            print('Pressure 1: ' + str(int(p1_value)) + 'bar')
-            print('Pressure 2: ' + str(int(p2_value)) + 'bar')
-            root.update_idletasks()
-            start1()
-            #root.after(100,read_gauge)
-            if switch == False:
-                if not stop():
-                    break
-    t = threading.Thread(target=run)
-    t.start()
+    global p1_value
+    global p2_value
+    #time.sleep(0.1)
+    v1 = chan0.voltage
+    v2 = chan1.voltage
+    p1_value = (78*(v1-0.4787))
+    p2_value = (78*(v2-0.4787))
+    p1.set_value(int(p1_value))
+    p2.set_value(int(p2_value))
+    #print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
+    print('Pressure 1: ' + str(int(p1_value)) + 'bar')
+    print('Pressure 2: ' + str(int(p2_value)) + 'bar')
+    root.update_idletasks()
 
-#Read Pressure Sensor 1
-def read_gauge2():
-    def run():
-        global p2_value
-        global switch
-        switch = True
-        while switch == True:
-            #time.sleep(0.1)
-            v2 = chan1.voltage
-            p2_value = (78*(v2-0.4787))
-            p2.set_value(int(p2_value))
-            #print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
-            print('Pressure: ' + str(int(p2_value)) + 'bar')
-            root.update_idletasks()
-            start2()
-            #root.after(100,read_gauge)
-            if switch == False:
-                if not stop():
-                    break
-    t = threading.Thread(target=run)
-    t.start()
 
 #Start the Program for first sequence
 def start1():
@@ -111,6 +79,7 @@ def start1():
             print('close valve 3 & 4')
         elif (p1_value < 50):
             stop()
+            read_gauge()
     if (p1_value < 50):
         if (p2_value <= 150) and (p2_value >= 50):
             GPIO.output(13, True)
@@ -122,7 +91,6 @@ def start1():
         elif (p2_value < 50):
             stop()
 
-#         start2()
 
 def start2():
     if (p2_value < 50):
@@ -141,27 +109,6 @@ def start2():
             turbineSpin()
         elif (p1_value <= 150) and (p1_value >= 50):
             stop()
-
-def startAni1():
-    if (p1_value <= 150) and (p1_value >= 50):
-        placeVon1_on()
-        placeVof1_off()
-        valve_path1()
-        turbineSpin()
-    elif (p1_value < 50):
-        stop()
-#         startAni2()
-
-
-def startAni2():
-    if (p2_value <= 150) and (p2_value >= 50):
-        placeVon2_on()
-        placeVof2_off()
-        valve_path2()
-        turbineSpin()
-    elif (p2_value <= 50):
-        stop()
-#         startAni1()
 
 
 def stop():
