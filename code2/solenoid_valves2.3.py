@@ -207,7 +207,11 @@ def startAni2():
         turbineSpin()
     elif (p2_value <= 50):
         stop()
+<<<<<<< HEAD
 #         startAni1()
+=======
+        #startAni1()
+>>>>>>> 527b79d79d503e4066ed05257234ea28b07ab07c
     
 ####------ ADDING WIDGETS ------####
 
