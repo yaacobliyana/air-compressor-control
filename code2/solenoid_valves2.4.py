@@ -45,7 +45,6 @@ def start():
     global switch
     switch = True
     read_gauge()
-    read_gauge2()
     start2()
 #     read_gauge2()
 #     startAni2()
@@ -60,10 +59,14 @@ def read_gauge():
         while switch == True:
             #time.sleep(0.1)
             v1 = chan0.voltage
+            v2 = chan1.voltage
             p1_value = (78*(v1-0.4787))
+            p2_value = (78*(v2-0.4787))
             p1.set_value(int(p1_value))
+            p2.set_value(int(p2_value))
             #print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
-            print('Pressure: ' + str(int(p1_value)) + 'bar')
+            print('Pressure 1: ' + str(int(p1_value)) + 'bar')
+            print('Pressure 2: ' + str(int(p2_value)) + 'bar')
             root.update_idletasks()
             start1()
             #root.after(100,read_gauge)
@@ -94,7 +97,72 @@ def read_gauge2():
                     break
     t = threading.Thread(target=run)
     t.start()
-    
+
+#Start the Program for first sequence
+def start1():
+    if (p2_value < 50):
+        if (p1_value <= 150) and (p1_value >= 50):
+            GPIO.output(13, False)
+            GPIO.output(19, False)
+            GPIO.output(26, True)
+            GPIO.output(16, True)
+            print('open valve 1 & 2')
+            print('close valve 3 & 4')
+        elif (p1_value < 50):
+            stop()
+    if (p1_value < 50):
+        if (p2_value <= 150) and (p2_value >= 50):
+            GPIO.output(13, True)
+            GPIO.output(19, True)
+            GPIO.output(26, False)
+            GPIO.output(16, False)
+            print('open valve 3 & 4')
+            print('close valve 1 & 2')
+        elif (p2_value < 50):
+            stop()
+
+#         start2()
+
+def start2():
+    if (p2_value < 50):
+        if (p1_value <= 150) and (p1_value >= 50):
+            placeVon1_on()
+            placeVof1_off()
+            valve_path1()
+            turbineSpin()
+        elif (p1_value < 50):
+            stop()
+    if (p2_value <= 150) and (p2_value >= 50):
+        if (p1_value < 50):
+            placeVon2_on()
+            placeVof2_off()
+            valve_path2()
+            turbineSpin()
+        elif (p1_value <= 150) and (p1_value >= 50):
+            stop()
+
+def startAni1():
+    if (p1_value <= 150) and (p1_value >= 50):
+        placeVon1_on()
+        placeVof1_off()
+        valve_path1()
+        turbineSpin()
+    elif (p1_value < 50):
+        stop()
+#         startAni2()
+
+
+def startAni2():
+    if (p2_value <= 150) and (p2_value >= 50):
+        placeVon2_on()
+        placeVof2_off()
+        valve_path2()
+        turbineSpin()
+    elif (p2_value <= 50):
+        stop()
+#         startAni1()
+
+
 def stop():
     print('System exited')
     global switch
@@ -163,83 +231,6 @@ def turbineSpin():
     t3.start()
 
     
-#Start the Program for first sequence
-def start1():
-    if (p2_value < 50):
-        if (p1_value <= 150) and (p1_value >= 50):
-            GPIO.output(13, False)
-            GPIO.output(19, False)
-            GPIO.output(26, True)
-            GPIO.output(16, True)
-            print('open valve 1 & 2')
-            print('close valve 3 & 4')
-        elif (p1_value < 50):
-            stop()
-    if (p2_value <= 150) and (p2_value >= 50):
-        if (p1_value < 50):
-            GPIO.output(13, True)
-            GPIO.output(19, True)
-            GPIO.output(26, False)
-            GPIO.output(16, False)
-            print('open valve 3 & 4')
-            print('close valve 1 & 2')
-        elif (p1_value <= 150) and (p1_value >= 50):
-            stop()
-
-#         start2()
-
-def start2():
-    if (p2_value < 50):
-        if (p1_value <= 150) and (p1_value >= 50):
-            placeVon1_on()
-            placeVof1_off()
-            valve_path1()
-            turbineSpin()
-        elif (p1_value < 50):
-            stop()
-    if (p2_value <= 150) and (p2_value >= 50):
-        if (p1_value < 50):
-            placeVon2_on()
-            placeVof2_off()
-            valve_path2()
-            turbineSpin()
-        elif (p1_value <= 150) and (p1_value >= 50):
-            stop()
-
-def startAni1():
-    if (p1_value <= 150) and (p1_value >= 50):
-        placeVon1_on()
-        placeVof1_off()
-        valve_path1()
-        turbineSpin()
-    elif (p1_value < 50):
-        stop()
-#         startAni2()
-
-#Start the Program for second sequence
-def start2():
-    if (p2_value <= 150) and (p2_value >= 50):
-        GPIO.output(13, True)
-        GPIO.output(19, True)
-        GPIO.output(26, False)
-        GPIO.output(16, False)
-        print('open valve 3 & 4')
-        print('close valve 1 & 2')
-    elif (p2_value <= 50):
-        stop()
-#         start1()
-
-    #Start the Program for second sequence
-def startAni2():
-    if (p2_value <= 150) and (p2_value >= 50):
-        placeVon2_on()
-        placeVof2_off()
-        valve_path2()
-        turbineSpin()
-    elif (p2_value <= 50):
-        stop()
-#         startAni1()
-
 
 ####------ ADDING WIDGETS ------####
 
