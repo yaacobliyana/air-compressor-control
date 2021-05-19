@@ -172,8 +172,8 @@ def start1():
         print('open valve 1 & 2')
         print('close valve 3 & 4')
     elif (p1_value < 50):
-        switch = False
-#         start2()
+        stop()
+    start2()
 
 def startAni1():
     if (p1_value <= 150) and (p1_value >= 50):
