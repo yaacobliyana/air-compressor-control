@@ -188,7 +188,7 @@ def start2():
         #start1()
 
     #Start the Program for second sequence
-def start2():
+def startAni2():
     if (p2_value <= 150) and (p2_value >= 50):
         placeVon2_on()
         placeVof2_off()
@@ -196,7 +196,7 @@ def start2():
         turbineSpin()
     elif (p2_value <= 50):
         stop()
-        #start1()
+        #startAni1()
     
 ####------ ADDING WIDGETS ------####
 
