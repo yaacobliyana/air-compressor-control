@@ -109,26 +109,27 @@ def valve_path2():
     blink2 = True
     while blink2 == True:
         if (p1_value < 50) and (p2_value <= 150) and (p2_value >= 50):
-        GPIO.output(13, True)
-        GPIO.output(19, True)
-        GPIO.output(26, False)
-        GPIO.output(16, False)
-        read_gauge()
-        arroway21()
-        time.sleep(0.25)
-        arroway22()
-        time.sleep(0.25)
-    else:
-        blink2 = False
-        stop()
-    if blink2 == False:
-        continue
+            GPIO.output(13, True)
+            GPIO.output(19, True)
+            GPIO.output(26, False)
+            GPIO.output(16, False)
+            read_gauge()
+            arroway21()
+            time.sleep(0.25)
+            arroway22()
+            time.sleep(0.25)
+        else:
+            blink2 = False
+            stop()
+        if blink2 == False:
+            continue
 
 
 def start():
     def run3():
         global switch
         switch = True
+        read_gauge()
         while switch == True:
             valve_path1()
             valve_path2()
