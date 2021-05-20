@@ -102,7 +102,7 @@ def valve_path1():
             time.sleep(0.25)
         else:
             blink1 = False
-            stop()    
+            closeAll()    
         if blink1 == False:
             continue
 
@@ -124,7 +124,7 @@ def valve_path2():
             time.sleep(0.25)
         else:
             blink2 = False
-            stop()
+            closeAll()
         if blink2 == False:
             continue
 
