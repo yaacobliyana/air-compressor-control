@@ -41,127 +41,23 @@ bgg = ImageTk.PhotoImage(bg)
 labelbg = Label(root, image=bgg)
 labelbg.place(x=0, y=0, relwidth=1, relheight=1)
 
-def start():
-    global switch
-    switch = True
-    read_gauge()
-    start2()
-#     read_gauge2()
-#     startAni2()
-    #start2()
 
 #Read Pressure Sensor 1
 def read_gauge():
-    def run():
-        global p1_value
-        global switch
-        switch = True
-        while switch == True:
-            #time.sleep(0.1)
-            v1 = chan0.voltage
-            v2 = chan1.voltage
-            p1_value = (78*(v1-0.4787))
-            p2_value = (78*(v2-0.4787))
-            p1.set_value(int(p1_value))
-            p2.set_value(int(p2_value))
-            #print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
-            print('Pressure 1: ' + str(int(p1_value)) + 'bar')
-            print('Pressure 2: ' + str(int(p2_value)) + 'bar')
-            root.update_idletasks()
-            start1()
-            #root.after(100,read_gauge)
-            if switch == False:
-                if not stop():
-                    break
-    t = threading.Thread(target=run)
-    t.start()
-
-#Read Pressure Sensor 1
-def read_gauge2():
-    def run():
-        global p2_value
-        global switch
-        switch = True
-        while switch == True:
-            #time.sleep(0.1)
-            v2 = chan1.voltage
-            p2_value = (78*(v2-0.4787))
-            p2.set_value(int(p2_value))
-            #print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
-            print('Pressure: ' + str(int(p2_value)) + 'bar')
-            root.update_idletasks()
-            start2()
-            #root.after(100,read_gauge)
-            if switch == False:
-                if not stop():
-                    break
-    t = threading.Thread(target=run)
-    t.start()
-
-#Start the Program for first sequence
-def start1():
-    if (p2_value < 50):
-        if (p1_value <= 150) and (p1_value >= 50):
-            GPIO.output(13, False)
-            GPIO.output(19, False)
-            GPIO.output(26, True)
-            GPIO.output(16, True)
-            print('open valve 1 & 2')
-            print('close valve 3 & 4')
-        elif (p1_value < 50):
-            stop()
-    if (p1_value < 50):
-        if (p2_value <= 150) and (p2_value >= 50):
-            GPIO.output(13, True)
-            GPIO.output(19, True)
-            GPIO.output(26, False)
-            GPIO.output(16, False)
-            print('open valve 3 & 4')
-            print('close valve 1 & 2')
-        elif (p2_value < 50):
-            stop()
-
-#         start2()
-
-def start2():
-    if (p2_value < 50):
-        if (p1_value <= 150) and (p1_value >= 50):
-            placeVon1_on()
-            placeVof1_off()
-            valve_path1()
-            turbineSpin()
-        elif (p1_value < 50):
-            stop()
-    if (p2_value <= 150) and (p2_value >= 50):
-        if (p1_value < 50):
-            placeVon2_on()
-            placeVof2_off()
-            valve_path2()
-            turbineSpin()
-        elif (p1_value <= 150) and (p1_value >= 50):
-            stop()
-
-def startAni1():
-    if (p1_value <= 150) and (p1_value >= 50):
-        placeVon1_on()
-        placeVof1_off()
-        valve_path1()
-        turbineSpin()
-    elif (p1_value < 50):
-        stop()
-#         startAni2()
-
-
-def startAni2():
-    if (p2_value <= 150) and (p2_value >= 50):
-        placeVon2_on()
-        placeVof2_off()
-        valve_path2()
-        turbineSpin()
-    elif (p2_value <= 50):
-        stop()
-#         startAni1()
-
+    global p1_value
+    global p2_value
+    #time.sleep(0.1)
+    v1 = chan0.voltage
+    v2 = chan1.voltage
+    p1_value = (78*(v1-0.4787))
+    p2_value = (78*(v2-0.4787))
+    p1.set_value(int(p1_value))
+    p2.set_value(int(p2_value))
+    #print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
+    print('Pressure 1: ' + str(int(p1_value)) + 'bar')
+    print('Pressure 2: ' + str(int(p2_value)) + 'bar')
+    root.update_idletasks()
+            
 
 def stop():
     print('System exited')
@@ -189,44 +85,60 @@ def closeAll():
     arroway20()
 
 def valve_path1():
-    def run1():
-        global blink1
-        blink1 = True
-        while blink1 == True:
+    global blink1
+    blink1 = True
+    while blink1 == True:
+        if (p1_value <= 150) and (p1_value >= 50) and (p2_value < 50):
+            GPIO.output(13, False)
+            GPIO.output(19, False)
+            GPIO.output(26, True)
+            GPIO.output(16, True)
+            read_gauge()
             arroway11()
             time.sleep(0.25)
             arroway12()
             time.sleep(0.25)
-            if blink1 == False:
-                break
-    t1 = threading.Thread(target=run1)
-    t1.start()
+        else:
+            blink1 = False
+            stop()    
+        if blink1 == False:
+            continue
 
 def valve_path2():
-    def run2():
-        global blink2
-        blink2 = True
-        while blink2 == True:
-            arroway21()
-            time.sleep(0.25)
-            arroway22()
-            time.sleep(0.25)
-            if blink2 == False:
-                break
-    t2 = threading.Thread(target=run2)
-    t2.start()
+    global blink2
+    blink2 = True
+    while blink2 == True:
+        if (p1_value < 50) and (p2_value <= 150) and (p2_value >= 50):
+        GPIO.output(13, True)
+        GPIO.output(19, True)
+        GPIO.output(26, False)
+        GPIO.output(16, False)
+        read_gauge()
+        arroway21()
+        time.sleep(0.25)
+        arroway22()
+        time.sleep(0.25)
+    else:
+        blink2 = False
+        stop()
+    if blink2 == False:
+        continue
 
-def turbineSpin():
+
+def start():
     def run3():
-        global blink
-        blink = True
-        while blink == True:
+        global switch
+        switch = True
+        while switch == True:
+            valve_path1()
+            valve_path2()
             placeTurbine1()
             time.sleep(0.1)
             placeTurbine2()
             time.sleep(0.1)
-            if blink == False:
-                break
+            if switch == False:
+                if not stop():
+                    break
     t3=threading.Thread(target=run3)
     t3.start()
 
