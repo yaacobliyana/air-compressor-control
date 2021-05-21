@@ -77,27 +77,6 @@ def read_gauge():
     t = threading.Thread(target=run)
     t.start()
 
-#Read Pressure Sensor 1
-def read_gauge2():
-    def run():
-        global p2_value
-        global switch
-        switch = True
-        while switch == True:
-            #time.sleep(0.1)
-            v2 = chan1.voltage
-            p2_value = (78*(v2-0.4787))
-            p2.set_value(int(p2_value))
-            #print('ADC Voltage 1: ' + str(chan0.voltage) + 'V')
-            print('Pressure: ' + str(int(p2_value)) + 'bar')
-            root.update_idletasks()
-            start2()
-            #root.after(100,read_gauge)
-            if switch == False:
-                if not stop():
-                    continue
-    t = threading.Thread(target=run)
-    t.start()
 
 #Start the Program for first sequence
 def start1():
@@ -121,8 +100,8 @@ def start1():
             print('close valve 1 & 2')
         elif (p2_value < 50):
             stop()
+    start()
 
-#         start2()
 
 def start2():
     if (p2_value < 50):
