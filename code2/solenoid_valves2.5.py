@@ -54,6 +54,7 @@ def start():
 def read_gauge():
     def run():
         global p1_value
+        global p2_value
         global switch
         switch = True
         while switch == True:

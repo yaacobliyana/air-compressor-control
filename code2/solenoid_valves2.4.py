@@ -95,7 +95,7 @@ def read_gauge2():
             #root.after(100,read_gauge)
             if switch == False:
                 if not stop():
-                    break
+                    continue
     t = threading.Thread(target=run)
     t.start()
 
