@@ -74,6 +74,9 @@ def read_gauge():
             if switch == False:
                 if not stop():
                     break
+            if switch == True:
+                if not start1():
+                    continue
     t = threading.Thread(target=run)
     t.start()
 
@@ -100,8 +103,7 @@ def start1():
             print('close valve 1 & 2')
         elif (p2_value < 50):
             stop()
-    start()
-
+    
 
 def start2():
     if (p2_value < 50):
