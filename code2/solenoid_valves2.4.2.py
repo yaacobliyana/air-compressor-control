@@ -74,9 +74,6 @@ def read_gauge():
             if switch == False:
                 if not stop():
                     break
-            if switch == True:
-                if not start1():
-                    continue
     t = threading.Thread(target=run)
     t.start()
 
