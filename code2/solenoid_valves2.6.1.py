@@ -80,14 +80,17 @@ def start1():
         stop()
 
 def start():
-    global switch
-    switch = True
-    while switch == True:
-        read_gauge()
-        start1()
-        if switch == False:
-            if not stop():
-                break
+    def run():
+        global switch
+        switch = True
+        while switch == True:
+            read_gauge()
+            start1()
+            if switch == False:
+                if not stop():
+                    break
+    t = threading.Thread(target=run)
+    t.start()
 
 
 def stop():
