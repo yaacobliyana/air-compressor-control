@@ -259,7 +259,7 @@ def rwp2():
 	rwp = Label(root, image=newrw, bg='black')
 	rwp.place(x=470,y=290)
 
-gwp1()
+rwp1()
 rwp2()
 
 #Inserting Arrow Image 1
